@@ -11,7 +11,7 @@ load_dotenv(f"{BASE_DIR}/.env")
 
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
-print(SECRET_KEY)
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -66,8 +66,11 @@ WSGI_APPLICATION = 'paosystem.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        "ENGINE": os.environ.get("ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("DB", BASE_DIR / "db.sqlite3"),
+        'USER': os.environ.get("USER_DB"),
+        'PASSWORD':  os.environ.get("PASSWORD"),
+        'HOST':  os.environ.get("HOST")
     }
 }
 
