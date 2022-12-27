@@ -1,0 +1,44 @@
+{% load static %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+<link rel="stylesheet" href="{% static 'main/css/auth.css' %}">
+
+
+<div class="container container-table">
+ <div class="row vertical-center-row ">
+
+ <div class="col-md-offset-4 col-md-5 col-sm-6 col-sm-offset-3 col-lg-4">
+ <form class="form-horizontal" method="POST">
+    {% csrf_token %}
+ <span class="heading" style = "color: #fff;">
+
+<img src = "{% static 'main/img/logo.png' %}" width="80" height="50">ПАО System</span>
+ <div class="form-group">
+ <input type="text" class="form-control" id="inputEmail" placeholder="Имя пользователя" name = "login">
+ <i class="fa fa-user"></i>
+ </div>
+
+ <div class="form-group help">
+ <input type="password" class="form-control" id="inputPassword" placeholder="Пароль", name = "password">
+ <i class="fa fa-lock"></i>
+ </div>
+
+ <div class="form-group text-center">
+
+ <button type="submit" class="btn btn-default">ВХОД</button>
+
+</div>
+{% for message in messages %}
+<div class = "alert-warning">
+  {{message}}  
+</div>
+{% endfor %}
+</div>
+
+ </form>
+ 
+ </div>
+
+ </div><!-- /.row -->
+</div><!-- /.container -->
