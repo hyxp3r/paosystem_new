@@ -1,0 +1,160 @@
+{% extends "main/index.html" %}
+{% load static %}
+
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Эффективный контракт профессорско-преподавательского состава</h1>
+</div>
+
+<div class="row">
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Заявлено позиций</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">Х</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-file fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Проверено позиций</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">Х</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Статус проверки
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                            </div>
+                            <div class="col">
+                                <div class="progress progress-sm mr-2">
+                                    <div class="progress-bar bg-info" role="progressbar"
+                                        style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                        aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-spinner fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                            Зарегистрировано апелляций</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">X</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    
+<div class="card shadow">
+<div class="card-header">
+    <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+</div>
+<div class="card-body">
+    <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Раздел ЭК</th>
+                    <th>Наименование раздела</th>
+                    <th>ФИО Эксперта</th>
+                    <th>Заявлено</th>
+                    <th>Проверено</th>
+                    <th>Прогресс проверки</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td># 1.1</td>
+                <td>Получение после 30.09.2020 знака, подтвержденное соответствующим дипломом, удостоверением, сертификатом, копией приказа (гиперссылкой на копию приказа, размещенную на официальном сайте уполномоченного органа)</td>
+                <td><b>Отдел кадров</b><br>(Злобина Н.В.)</td>
+                <td>0</td>
+                <td>0 (0%)</td>
+                <td>
+                    <div class="progress progress">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">x %</div>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td><a href="https://airtable.com/shrp4T3jgWlT9IuFF/tblUJwFewf38XK9NH"># 2.1 ВО</a></td>
+                <td>Разработка  и обновление  учебно-методических материалов, подтверждённые листом изменений (для обновленных документов) и размещением на сайте НГУЭУ утвержденного документа</td>
+                <td><b>Методический отдел</b><br>(Куткина А.В.)</td>
+                <td>0</td>
+                <td>0 (0%)</td>
+                <td>
+                    <div class="progress progress">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: 64%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">x %</div>
+                    </div>
+                </td>
+            </tr>
+            
+            <tr>
+                <td># 2.1 СПО</td>
+                <td>Разработка  и обновление  учебно-методических материалов, подтверждённые листом изменений (для обновленных документов) и размещением на сайте НГУЭУ утвержденного документа</td>
+                <td><b>Методический отдел</b><br>(Куткина А.В.)</td>
+                <td>0</td>
+                <td>0 (0%)</td>
+                <td>
+                    <div class="progress progress">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: 12%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">x %</div>
+                    </div>
+                </td>
+            </tr>
+            
+        
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+    
+</div>
+{% endblock %}
