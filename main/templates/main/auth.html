@@ -1,44 +1,95 @@
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-<link rel="stylesheet" href="{% static 'main/css/auth.css' %}">
+<head>
 
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-<div class="container container-table">
- <div class="row vertical-center-row ">
+    <title>SB Admin 2 - Login</title>
 
- <div class="col-md-offset-4 col-md-5 col-sm-6 col-sm-offset-3 col-lg-4">
- <form class="form-horizontal" method="POST">
-    {% csrf_token %}
- <span class="heading" style = "color: #fff;">
+    <!-- Custom fonts for this template-->
+    <link href="{% static 'main/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
 
-<img src = "{% static 'main/img/logo.png' %}" width="80" height="50">ПАО System</span>
- <div class="form-group">
- <input type="text" class="form-control" id="inputEmail" placeholder="Имя пользователя" name = "login">
- <i class="fa fa-user"></i>
- </div>
+    <!-- Custom styles for this template-->
+    <link href="{% static 'main/css/sb-admin-2.css' %}" rel="stylesheet">
 
- <div class="form-group help">
- <input type="password" class="form-control" id="inputPassword" placeholder="Пароль", name = "password">
- <i class="fa fa-lock"></i>
- </div>
+</head>
 
- <div class="form-group text-center">
+<body class="bg-gradient-custom">
 
- <button type="submit" class="btn btn-default">ВХОД</button>
+    <div class="container">
 
-</div>
-{% for message in messages %}
-<div class = "alert-warning">
-  {{message}}  
-</div>
-{% endfor %}
-</div>
+        <!-- Outer Row -->
+        <div class="row justify-content-center">
 
- </form>
- 
- </div>
+            <div class="col-xl-6 col-lg-10 col-md-9">
 
- </div><!-- /.row -->
-</div><!-- /.container -->
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <!-- Nested Row within Card Body -->
+                        <div class="row">
+<!--                            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>-->
+                            <div class="col-xl-12">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <h1 class="h4 text-gray-900 mb-4">Авторизация</h1>
+                                    </div>
+                                    <form class="user" method="POST">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <input type="text" class="form-control form-control-user"
+                                                id="exampleInputEmail" aria-describedby="emailHelp"
+                                                placeholder="Введите логин" name="login">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control form-control-user"
+                                                id="exampleInputPassword" placeholder="Пароль" name="password">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-user btn-block">Войти</button>
+                                        <br>
+                                        {% for message in messages %}
+                                        <div class = "alert-danger text-center">
+                                          {{message}}  
+                                        </div>
+                                        {% endfor %}
+                                        <hr>
+                                    </form>
+                                    <div class="text-center">
+                                        <a class="small" href="">Восстановить пароль</a>
+                                    </div>
+                                    <div class="text-center">
+                                        <a class="small" href="register.html">Зарегистрироваться</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{% static 'main/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'main/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="{% static 'main/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="{% static 'main/js/sb-admin-2.min.js' %}"></script>
+
+</body>
+
+</html>
