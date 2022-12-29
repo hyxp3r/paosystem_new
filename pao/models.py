@@ -43,6 +43,7 @@ class ContractNames(models.Model):
 
     sectionEC = models.CharField(max_length=10, verbose_name = "Номер пункта")
     descriptionEC  = models.TextField(verbose_name = "Описание")
+    url = models.URLField(verbose_name="Ссылка", null = True, blank=True)
     expertEC = models.ForeignKey(Expert, null=True, blank=True, verbose_name = "Эксперт", on_delete= models.SET_NULL)
 
     class Meta:
@@ -68,3 +69,9 @@ class CheckEc(models.Model):
 
     def __str__(self) -> str:
         return (self.contractName.sectionEC)
+
+    def calculateProgress(self):
+
+        percent = 0 if self.declared == 0 else round(self.verified/self.declared*100)
+        
+        return percent
