@@ -1,8 +1,16 @@
 {% extends "main/index.html" %}
 {% load static %}
 
+{%block link %}
+<link href="{% static 'pao/css/pao.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block content %}
+
+
+
+<script src= "{% static 'pao/js/pao.js' %}"></script>
+
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Эффективный контракт профессорско-преподавательского состава</h1>
 </div>
@@ -16,7 +24,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Заявлено позиций</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">Х</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{sum_requests.declared__sum}}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-file fa-2x text-gray-300"></i>
@@ -33,7 +41,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                             Проверено позиций</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">Х</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{sum_requests.verified__sum}}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-check fa-2x text-gray-300"></i>
@@ -52,7 +60,7 @@
                         </div>
                         <div class="row no-gutters align-items-center">
                             <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{all_persent}}%</div>
                             </div>
                             <div class="col">
                                 <div class="progress progress-sm mr-2">
@@ -78,7 +86,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                             Зарегистрировано апелляций</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">X</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">0</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -110,44 +118,25 @@
                 </tr>
             </thead>
             <tbody>
+
+            {% for issue in issues %}
+            
             <tr>
-                <td># 1.1</td>
-                <td>Получение после 30.09.2020 знака, подтвержденное соответствующим дипломом, удостоверением, сертификатом, копией приказа (гиперссылкой на копию приказа, размещенную на официальном сайте уполномоченного органа)</td>
-                <td><b>Отдел кадров</b><br>(Злобина Н.В.)</td>
-                <td>0</td>
-                <td>0 (0%)</td>
+                <td><a href="{{issue.contractName.url}}" id="urls"># {{ issue.contractName.sectionEC }}</a></td>
+                <td>{{ issue.contractName.descriptionEC }}</td>
+                <td><b>{{ issue.contractName.expertEC.department }}</b><br>({{ issue.contractName.expertEC.calculateShortFio }})</td>
+                <td class = "text-center">{{ issue.declared }}</td>
+                <td class = "text-center">{{ issue.verified }} ({{issue.calculateProgress}}%)</td>
                 <td>
                     <div class="progress progress">
-                        <div class="progress-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">x %</div>
+                        <div class="progress-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">{{issue.calculateProgress}}%</div>
                     </div>
                 </td>
             </tr>
 
-            <tr>
-                <td><a href="https://airtable.com/shrp4T3jgWlT9IuFF/tblUJwFewf38XK9NH"># 2.1 ВО</a></td>
-                <td>Разработка  и обновление  учебно-методических материалов, подтверждённые листом изменений (для обновленных документов) и размещением на сайте НГУЭУ утвержденного документа</td>
-                <td><b>Методический отдел</b><br>(Куткина А.В.)</td>
-                <td>0</td>
-                <td>0 (0%)</td>
-                <td>
-                    <div class="progress progress">
-                        <div class="progress-bar bg-info" role="progressbar" style="width: 64%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">x %</div>
-                    </div>
-                </td>
-            </tr>
+            {% endfor %}
             
-            <tr>
-                <td># 2.1 СПО</td>
-                <td>Разработка  и обновление  учебно-методических материалов, подтверждённые листом изменений (для обновленных документов) и размещением на сайте НГУЭУ утвержденного документа</td>
-                <td><b>Методический отдел</b><br>(Куткина А.В.)</td>
-                <td>0</td>
-                <td>0 (0%)</td>
-                <td>
-                    <div class="progress progress">
-                        <div class="progress-bar bg-info" role="progressbar" style="width: 12%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">x %</div>
-                    </div>
-                </td>
-            </tr>
+
             
         
             </tbody>
@@ -158,3 +147,5 @@
     
 </div>
 {% endblock %}
+
+<script src="{% static 'pao/js/ec.js' %}"></script>
