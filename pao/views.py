@@ -6,16 +6,32 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import CheckEc
 from django.db.models import Sum
+from django.views.generic import ListView
 # Create your views here.
 
 
 
 #@login_required(login_url = 'login')
-def contracts(request):
+class ContractsListView(ListView):
 
-    issues = CheckEc.objects.all().select_related("contractName__expertEC__department")
-    sum_requests = CheckEc.objects.all().aggregate(Sum("verified"), Sum("declared"))
-    all_persent = round(sum_requests["verified__sum"]/sum_requests["declared__sum"]*100)
- 
+    
+    template_name = "pao/contracts.html"
+    queryset = CheckEc.objects.all().select_related("contractName__expertEC__department")
+    context_object_name = "issues"
+    login_required = True
+
+    
+    def get_context_data(self, **kwargs) -> dict[str]:
+
+        sum_requests = CheckEc.objects.all().aggregate(Sum("verified"), Sum("declared"))
+        all_persent = round(sum_requests["verified__sum"]/sum_requests["declared__sum"]*100)
+
+        context = super().get_context_data(**kwargs)
+        context["sum_requests"] = sum_requests
+        context["all_persent"] = all_persent
+
+        return context
+
    
-    return render(request, "pao/contracts.html", {"issues": issues, "sum_requests": sum_requests, "all_persent": all_persent})
+
+
