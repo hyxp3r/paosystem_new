@@ -2,7 +2,20 @@ from django.db import models
 
 
 # Create your models here.
+class Post(models.Model):
 
+    name = models.CharField(max_length = 100, verbose_name = "Наименование должности")
+
+    class Meta:
+
+        verbose_name = 'Должность'
+        verbose_name_plural = 'Должность'
+        ordering = ('name',)
+
+    def __str__(self) -> str:
+
+        return (self.name)
+        
 class Department(models.Model):
 
     name = models.CharField(max_length = 100, verbose_name = "Название")
