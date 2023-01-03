@@ -2,10 +2,11 @@ from django.db import models
 from datetime import date
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
+from pao import models as paopodels
  
 class User(AbstractUser):
-    department = models.CharField(max_length = 100, blank = True, null = True, verbose_name = "Отдел")
-    post = models.CharField(max_length = 50, blank = True, null = True, verbose_name = "Должность")
+    department = models.ForeignKey(paopodels.Department, null = True, blank = True, verbose_name = "Отдел", on_delete=models.SET_NULL)
+    post = models.ForeignKey(paopodels.Post, null = True, blank = True, verbose_name = "Должность", on_delete=models.SET_NULL)
     dateBith = models.DateField(default = timezone.now, verbose_name = "Дата рождения")
 
     def getAge (self):
