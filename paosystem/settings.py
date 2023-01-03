@@ -11,7 +11,7 @@ load_dotenv(f"{BASE_DIR}/.env")
 
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
-print(SECRET_KEY)
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -28,6 +28,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'main',
+    'pao'
 ]
 
 MIDDLEWARE = [
@@ -66,8 +68,11 @@ WSGI_APPLICATION = 'paosystem.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        "ENGINE": os.environ.get("ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("DB", BASE_DIR / "db.sqlite3"),
+        'USER': os.environ.get("USER_DB"),
+        'PASSWORD':  os.environ.get("PASSWORD"),
+        'HOST':  os.environ.get("HOST")
     }
 }
 
@@ -92,9 +97,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "Asia/Novosibirsk"
 
 USE_I18N = True
 
@@ -104,9 +109,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+LOGIN_URL = "login"
+LOGIN_REDIRECT = "/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'main.User'
