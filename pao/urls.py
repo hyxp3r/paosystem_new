@@ -1,7 +1,8 @@
 from django.urls import path
-from . import views
+from .views import ContractsListView
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
-    path("pao/contracts", views.contracts, name = "paocontracts"),
+    path("pao/contracts", login_required(ContractsListView.as_view()), name = "paocontracts"),
     
 ] 
