@@ -15,7 +15,7 @@ class Post(models.Model):
     def __str__(self) -> str:
 
         return (self.name)
-        
+
 class Department(models.Model):
 
     name = models.CharField(max_length = 100, verbose_name = "Название")
@@ -88,3 +88,13 @@ class CheckEc(models.Model):
         percent = 0 if self.declared == 0 else round(self.verified/self.declared*100)
         
         return percent
+
+class Concat(models.Model):
+
+    name = models.CharField(max_length=50, verbose_name="Имя", blank=False, null=False)
+    email = models.EmailField(max_length=50)
+
+    class Meta:
+
+        verbose_name = "Контанкт"
+        verbose_name_plural = "Контакт"
