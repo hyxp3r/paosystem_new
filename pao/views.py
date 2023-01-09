@@ -25,7 +25,7 @@ class ContractsListView(ListView):
     login_required = True
 
     
-    def get_context_data(self, **kwargs) -> dict[str]:
+    def get_context_data(self, **kwargs):
 
         sum_requests = CheckEc.objects.all().aggregate(Sum("verified"), Sum("declared"))
         all_persent = round(sum_requests["verified__sum"]/sum_requests["declared__sum"]*100)
