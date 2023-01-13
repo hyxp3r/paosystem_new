@@ -1,0 +1,37 @@
+{% extends "main/index.html" %}
+{% load static %}
+
+{% block link %}
+<script src="{%static 'pao/js/file.js' %}"> </script>
+{% endblock %}
+
+{% block content %}
+
+<div class = "container">
+    <div class="row col-lg-6 col-md-5 col-sm-8 col-7 border border-4 border-secondary mx-auto " id = "formDiv" >
+        <form method="post" enctype="multipart/form-data" action="#" autocomplete="off" id = "formFile">
+          <h1>Форма обработки файла 1С</h1>
+          {% csrf_token %}
+            Выберите тип выгрузки
+            {% for radio in form.types %}
+            <div class="form-check">
+              {{ radio }}
+            </div>
+            {% endfor %}  
+              <div class="mb-3">
+                <label for="formFile" class="form-label">Выберите файл формата .xlsx</label>
+                {{form.file}}
+              </div>
+
+              {% for message in messages %}
+              <div class="alert alert-danger" id = "formAlert" role="alert">
+                {{message}}
+              </div> 
+              {% endfor %}
+
+              <button class="btn btn-primary" type="submit" style= "margin: 0 auto;
+              display: block; margin-bottom:10px;">Обработать файл</button>
+          </form>   
+    </div>
+</div>        
+{% endblock %}
