@@ -3,15 +3,16 @@
 
 {%block link %}
 <link href="{% static 'pao/css/pao.css' %}" rel="stylesheet">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.4/js/mdb.min.js"></script> -->
 {% endblock %}
 
 {% block content %}
 
 
-
 <script src= "{% static 'pao/js/pao.js' %}"></script>
-
-<p>Время обновления информации: </p>
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Эффективный контракт профессорско-преподавательского состава</h1>
@@ -67,7 +68,7 @@
                             <div class="col">
                                 <div class="progress progress-sm mr-2">
                                     <div class="progress-bar bg-info" role="progressbar"
-                                        style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                        style="width: 0%" aria-valuenow="0" aria-valuemin="0"
                                         aria-valuemax="100"></div>
                                 </div>
                             </div>
@@ -99,14 +100,23 @@
     </div>
 </div>
 
+<div class="row">
+    <button class="mb-2 mr-2 border-0 btn-transition btn btn-outline-link">Фильтры</button>
+    <button class="mb-2 mr-2 border-0 btn-transition btn btn-outline-danger notCheckFilter">Не проверенные</button>
+    <button class="mb-2 mr-2 border-0 btn-transition btn btn-outline-warning checkInProgressFilter">На проверке</button>
+    <button class="mb-2 mr-2 border-0 btn-transition btn btn-outline-success checkCompleteFilter">Проверка завершена</button>
+    <!-- <button class="mb-2 mr-2 border-0 btn-transition btn btn-outline-link"> -->
+    <!-- <i style="font-size: 25px" class="fas fa-sync" data-toggle="tooltip" data-placement="top" title="Сбросить фильтр" id="resetFilter"></i> -->
+    </button>
+</div>
 
 <div class="row">
-    
 <div class="card shadow">
 <div class="card-header">
-    <h6 class="m-0 font-weight-bold text-primary">Информация по разделам</h6>
+    <h6 class="m-0 font-weight-bold text-primary">Информация по разделам <span style="color: gray;">/ Время обновления: </span></h6> 
 </div>
-<div class="card-body">
+
+<div class="card-body">    
     <div class="table-responsive">
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
@@ -131,16 +141,21 @@
                 <td class = "text-center">{{ issue.verified }} ({{issue.calculateProgress}}%)</td>
                 <td>
                     <div class="progress progress">
-                        <div class="progress-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">{{issue.calculateProgress}}%</div>
+                        
+                        {% if issue.calculateProgress == 100 %}
+                        <div class="progress-bar razd bg-success checkComplete" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">{{issue.calculateProgress}}%</div>
+                        {% elif issue.calculateProgress == 0 %}
+                        <div class="progress-bar razd bg-danger notCheck" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">{{issue.calculateProgress}}%</div>
+                        {% else %}
+                        <div class="progress-bar razd bg-warning checkInProgress" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">{{issue.calculateProgress}}%</div>
+                        {% endif %}
+
                     </div>
                 </td>
             </tr>
 
             {% endfor %}
-            
 
-            
-        
             </tbody>
         </table>
     </div>
@@ -151,3 +166,8 @@
 {% endblock %}
 
 <script src="{% static 'pao/js/ec.js' %}"></script>
+<script src="{% static 'pao/js/main.js' %}"></script>
+
+<script>
+    
+</script>
