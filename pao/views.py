@@ -23,6 +23,7 @@ class ContractsListView(ListView):
     
     template_name = "pao/contracts.html"
     queryset = CheckEc.objects.all().select_related("contractName__expertEC__department").order_by("contractName")
+    print(queryset[0].createdTime)
     context_object_name = "issues"
     login_required = True
 
@@ -35,6 +36,7 @@ class ContractsListView(ListView):
         context = super().get_context_data(**kwargs)
         context["sum_requests"] = sum_requests
         context["all_persent"] = all_persent
+        context["createdTime"] = self.queryset[0].createdTime
 
         return context
 

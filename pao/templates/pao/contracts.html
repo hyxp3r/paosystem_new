@@ -110,7 +110,7 @@
 <div class="row">
 <div class="card shadow">
 <div class="card-header">
-    <h6 class="m-0 font-weight-bold text-primary">Информация по разделам <span style="color: gray;">/ Время обновления: </span></h6> 
+    <h6 class="m-0 font-weight-bold text-primary">Информация по разделам <span style="color: gray;">/ Время обновления: <b>{{createdTime}}</b> </span></h6> 
 </div>
 
 <div class="card-body">    
@@ -140,11 +140,11 @@
                     <div class="progress progress">
                         
                         {% if issue.calculateProgress == 100 %}
-                        <div class="progress-bar razd bg-success checkComplete" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">{{issue.calculateProgress}}%</div>
+                        <div class="progress-bar razd bg-success checkComplete" role="progressbar" style="width: 0%" aria-valuenow= "0" aria-valuemin= "0" aria-valuemax= "100">{{issue.calculateProgress}}%</div>
                         {% elif issue.calculateProgress == 0 %}
-                        <div class="progress-bar razd bg-danger notCheck" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">{{issue.calculateProgress}}%</div>
+                        <div class="progress-bar razd bg-danger notCheck" role="progressbar" style="width: 0%" aria-valuenow= "0" aria-valuemin= "0" aria-valuemax= "100">{{issue.calculateProgress}}%</div>
                         {% else %}
-                        <div class="progress-bar razd bg-warning checkInProgress" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">{{issue.calculateProgress}}%</div>
+                        <div class="progress-bar razd bg-warning checkInProgress" role="progressbar" style="width: 0%" aria-valuenow= "0" aria-valuemin= "0" aria-valuemax= "100">{{issue.calculateProgress}}%</div>
                         {% endif %}
 
                     </div>
@@ -162,7 +162,6 @@
 </div>
 {% endblock %}
 
-<script src="{% static 'pao/js/ec.js' %}"></script>
 <script src="{% static 'pao/js/main.js' %}"></script>
 
 <script>
