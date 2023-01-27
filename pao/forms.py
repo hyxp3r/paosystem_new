@@ -20,3 +20,9 @@ class Proccess1CFileForm(forms.Form):
     file = forms.FileField(widget=forms.FileInput(attrs = {"class":"form-control", "type":"file", 
     "id":"formFile", "onchange":"deleteWarning()", 'accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'}),
     validators=[FileExtensionValidator(allowed_extensions=["xlsx"])])
+
+
+class StudyLoadForm(forms.Form):
+
+    file = forms.FileField(widget = forms.FileInput(attrs = {"class": "form-control form-control-lg", "onchange":"deleteWarning()", "type": "file", "accept": ".zip"}), 
+    validators=[FileExtensionValidator(allowed_extensions=["zip"])])
