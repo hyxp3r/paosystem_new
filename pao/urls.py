@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ContractsListView, ConcatView, file, studyload, StudyLoadView
+from .views import ContractsListView, ConcatView, file, StudyLoadView
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
