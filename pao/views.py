@@ -1,16 +1,15 @@
 
 from django.shortcuts import render
 from django.contrib import messages
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from .models import CheckEc, Concat
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import CheckEc, Concat, Appeals
 from django.db.models import Sum
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, FormView
 from .forms import ConcatForm
-from .service import send
 from .files import files1C
-from .forms import Proccess1CFileForm
+from .studyload import StudyLoad
+from .forms import Proccess1CFileForm, StudyLoadForm
 
 from .tasks import send_spam_email
 # Create your views here.
@@ -33,10 +32,13 @@ class ContractsListView(ListView):
         sum_requests = CheckEc.objects.all().aggregate(Sum("verified"), Sum("declared"))
         all_persent = round(sum_requests["verified__sum"]/sum_requests["declared__sum"]*100)
 
+        appeals = Appeals.objects.all()
+
         context = super().get_context_data(**kwargs)
         context["sum_requests"] = sum_requests
         context["all_persent"] = all_persent
         context["createdTime"] = self.queryset[0].createdTime
+        context["appeals"] = appeals[0].count
 
         return context
 
@@ -62,7 +64,7 @@ def file(request):
       form = Proccess1CFileForm(request.POST, request.FILES)
       if form.is_valid():
 
-         type = form.cleaned_data["types"]
+         
          file = form.cleaned_data["file"]
          response = files1C().getInfo(file, type)
          
@@ -75,6 +77,31 @@ def file(request):
 
    return render(request,"pao/file.html", {"form":form})
 
+
+class StudyLoadView(FormView):
+
+   form_class = StudyLoadForm
+   template_name = "pao/nagruzka.html"
+   success_url = "sudyload"
    
+   def form_valid(self, form) -> HttpResponse:
 
+      file = self.get_form_kwargs().get("files").get("file")
+      response = StudyLoad(file).makeLoad()
 
+      if response:
+         return  response
+      else:
+      
+         messages.info(self.request, "Запрос отклонен. Файлы в архиве не соответствуют файлам нагрузки")
+         return super().form_valid(form)
+
+   def form_invalid(self, form):
+      
+      messages.info(self.request, "Запрос отклонен. Можно загружать только архив формата .zip")
+
+      return super().form_invalid(form)
+
+      
+
+   
