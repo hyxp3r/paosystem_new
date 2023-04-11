@@ -11,7 +11,9 @@ from .files import files1C
 from .studyload import StudyLoad
 from .forms import Proccess1CFileForm, StudyLoadForm
 
-from .tasks import send_spam_email
+from .tasks import send_spam_email, make_study_load
+import base64
+import io
 # Create your views here.
 
 
@@ -64,7 +66,7 @@ def file(request):
       form = Proccess1CFileForm(request.POST, request.FILES)
       if form.is_valid():
 
-         
+         type = form.cleaned_data["types"]
          file = form.cleaned_data["file"]
          response = files1C().getInfo(file, type)
          
@@ -87,14 +89,22 @@ class StudyLoadView(FormView):
    def form_valid(self, form) -> HttpResponse:
 
       file = self.get_form_kwargs().get("files").get("file")
+      #file = base64.b64encode(file.read())
+      
+      """
+      data = {
+         "file": file.decode("utf-8")
+      }
+      """
       response = StudyLoad(file).makeLoad()
-
       if response:
          return  response
       else:
-      
          messages.info(self.request, "Запрос отклонен. Файлы в архиве не соответствуют файлам нагрузки")
          return super().form_valid(form)
+      #response = make_study_load.delay(data)
+      #messages.info(self.request, "Запрос отклонен. Файлы в архиве не соответствуют файлам нагрузки")
+      #return super().form_valid(form)
 
    def form_invalid(self, form):
       
