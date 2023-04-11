@@ -98,3 +98,13 @@ class Concat(models.Model):
 
         verbose_name = "Контанкт"
         verbose_name_plural = "Контакт"
+
+class Appeals(models.Model):
+
+    count = models.IntegerField(verbose_name="Аппеляции")
+
+    class Meta:
+
+        verbose_name = "Аппеляции"
+        verbose_name_plural = "Аппеляции"
+
