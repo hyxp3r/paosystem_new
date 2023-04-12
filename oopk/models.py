@@ -6,6 +6,7 @@ from django.db import models
 class EduLevelProgram(models.Model):
 
     name = models.CharField("Наименование", max_length = 50)
+    tandem_name = models.CharField("Наименование в Tandem", max_length = 50)
 
     def __str__(self) -> str:
         return self.name
@@ -56,6 +57,7 @@ class PriemType(models.Model):
 class DevelopeForm(models.Model):
 
     name = models.CharField("Наименование", max_length=100)
+    sort = models.SmallIntegerField("Индекс для сортировки")
 
 
     def __str__(self) -> str:
