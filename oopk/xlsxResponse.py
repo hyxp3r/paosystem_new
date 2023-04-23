@@ -1,0 +1,40 @@
+import pandas as pd
+from django.http import HttpResponse
+import base64
+from openpyxl.utils import get_column_letter
+
+
+
+class ResponseXlsx:
+
+    def __init__(self, data) -> None:
+
+        self.data = data
+        self.response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        self.response['Content-Disposition'] = f"attachment; filename=report.xlsx"
+
+    def makeIO(self):
+            
+        #self.data.to_excel(self.response, index = False, sheet_name='Отчет')
+
+        writer = pd.ExcelWriter(self.response, engine='openpyxl')
+
+        self.data.to_excel(writer, index=False, sheet_name='Sheet1')
+
+        # Получение объекта workbook
+        workbook = writer.book
+        worksheet = writer.sheets['Sheet1']
+
+        for idx, col in enumerate(self.data):
+            series = self.data[col]
+            max_len = max((series.astype(str).map(len).max(), len(str(series.name)))) + 1
+            if max_len > 50:
+                max_len = 50
+            col_letter = get_column_letter(idx + 1)
+            worksheet.column_dimensions[col_letter].width = max_len
+        
+        writer.save()
+        
+        return base64.b64encode(self.response.getvalue()).decode('utf-8')
+
+    

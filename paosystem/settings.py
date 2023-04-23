@@ -77,6 +77,11 @@ DATABASES = {
     }
 }
 
+TANDEM_HOST = os.environ.get("TANDEM_HOST")
+TANDEM_DB = os.environ.get("TANDEM_DB")
+TANDEM_USERNAME = os.environ.get("TANDEM_USERNAME")
+TANDEM_PASSWORD = os.environ.get("TANDEM_PASSWORD")
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

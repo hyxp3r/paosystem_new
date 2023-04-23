@@ -5,15 +5,15 @@
 
 {% block content %}
 <div class="col-md-4 offset-md-3">
-<form class = "customer_request" data-url="#" id="registration-form" method="post">
+<form class = "customer_request" data-url="{% url 'report' %}" id="registration-form" method="post">
 
     {% csrf_token %}
     <h1>Форма отчета</h1>
 
     <div class="form-group">
         <label for="select2EduLevel">Уровень образования:</label>
-        <select class="form-control" id="select2EduLevel">
-
+        <select name = "EduLevel" class="form-control" id="select2EduLevel" required>
+            
             {% for level in eduLevel %}
             
             <option value="{{level.tandem_name}}"> {{level.name}}</option>
@@ -24,7 +24,7 @@
       </div>
       <div class="form-group">
         <label for="select2Program">Направление подготовки:</label>
-        <select class="form-control" id="select2Program" multiple >
+        <select name = "program" class="form-control" id="select2Program" multiple disabled required >
             {% for program in programs %}
             <option value="{{program.code}}">{{program.makeProgram}}</option>
             {% endfor %}
@@ -34,7 +34,8 @@
 
       <div class="form-group">
         <label for="select2Form"> Форма обучения:</label>
-        <select class="form-control" id="select2Form" multiple >
+        <select name = "form" class="form-control" id="select2Form" multiple required >
+
             {% for form in forms %}
 
              <option value="{{form.name}}">{{form.name}}</option>
@@ -43,7 +44,73 @@
      
         </select>
       </div>
+
+      <div class="form-group">
+        <label for="select2competitionType"> Тип конкурса:</label>
+        <select name = "competitionType" class="form-control" id="select2competitionType" multiple >
+
+            {% for type in typePriem %}
+
+             <option value="{{type.name}}">{{type.name}}</option>
+
+             {% endfor %}
+     
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="form-group">Рейтинговые параметры</label>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxRating" name="checkboxRating">
+          <label class="form-check-label" for="checkboxRating">Сумма баллов</label>
+        </div>
+        <div class = "form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxDocumentRating" name="checkboxDocumentRating">
+          <label class="form-check-label" for="checkboxDocumentRating">Средний балл ДОО</label>
+        </div>
+
+      </div>
+
+      <div class="form-group">
+        <label for="form-group">Контактная информация</label>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxPhone" name="checkboxPhone">
+          <label class="form-check-label" for="checkboxPhone">Контактный телефон</label>
+        </div>
+        <div class = "form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxEmail" name="checkboxEmail">
+          <label class="form-check-label" for="checkboxEmail">E-mail</label>
+        </div>
+
+      </div>
+
+      <div class="form-group">
+        <label for="form-group">Языки</label>
+        <div class="form-check">
+          <input type="radio" class="form-check-input" id="radioLanguageMain" name="radioLanguage" value = "main">
+          <label class="form-check-label" for="radioLanguageMain">Основной язык</label>
+        </div>
+        <div class="form-check">
+          <input type="radio" class="form-check-input" id="radioLanguageSecond" name="radioLanguage" value="second">
+          <label class="form-check-label" for="radioLanguageSecond">Дополнительный язык</label>
+        </div>
+ 
+      </div>
   
+      <div class="report-ready text-center alert alert-success" role="alert" style="display: none;">
+        Отчет готов
+      
+      </div>
+
+      <div class="report-making text-center alert alert-warning" role="alert" style="display: none;">
+        Отчет формируется
+      
+      </div>
+      <br>
+      <div class = "text-center">
+          <button type="submit" class="btn btn-primary">Отправить</button>
+          </div>
+
 
    
 </form>
@@ -66,10 +133,26 @@
 <script>
     // Инициализация Select2
     $(document).ready(function() {
-      $('#select2Program').select2();
-      $('#select2Form').select2();
+      $('#select2Program').select2({
+        closeOnSelect: false
+      });
+      $('#select2Form').select2({
+        closeOnSelect: false
+      });
+      $('#select2competitionType').select2({
+        closeOnSelect: false
+      });
     });
   </script>
+<script>
+    $(document).ready(function() {
+      var select1 = $('#select2EduLevel'); // Поле выбора №1
+      
+      // Добавляем опцию "-- Выберите опцию 1 --" в начало списка выбора
+      select1.prepend('<option value="" disabled selected style="display:none;">Выберите уровень образования</option>');
+    });
+    </script>
+<script src="{% static 'oopk/js/ajax.js' %}"></script>
 {% endblock %}
 
 
