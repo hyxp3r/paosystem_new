@@ -27,7 +27,7 @@ class ResponseXlsx:
 
         for idx, col in enumerate(self.data):
             series = self.data[col]
-            max_len = max((series.astype(str).map(len).max(), len(str(series.name)))) + 1
+            max_len = max((series.astype(str).map(len).max(), len(str(series.name)))) + 5
             if max_len > 50:
                 max_len = 50
             col_letter = get_column_letter(idx + 1)
