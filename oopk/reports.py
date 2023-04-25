@@ -46,8 +46,7 @@ class ReportOne(Connection):
             FROM Tandem_prod.dbo.enr_req_competition_ext_view AS V
            
             JOIN Tandem_prod.dbo.ENR14_REQUEST_T R ON R.ENTRANT_ID = V.entrantId
-            JOIN enr14_request_t ER on EN.ID = ER.ENTRANT_ID
-            JOIN identitycard_t IC on IC.ID = ER.identitycard_id
+            JOIN identitycard_t IC on IC.ID = R.identitycard_id
             
             JOIN Tandem_prod.dbo.PERSON_T P on P.ID = IC.PERSON_ID 
             JOIN Tandem_prod.dbo.personcontactdata_t PContact ON P.CONTACTDATA_ID = PContact.ID
