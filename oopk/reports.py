@@ -1,7 +1,6 @@
 import pyodbc
 from django.conf import settings
 import pandas as pd
-from .xlsxResponse import ResponseXlsx
 
 
 
@@ -28,8 +27,6 @@ class ReportOne(Connection):
 
         with self.conn:
 
-            #print(request.get("checkboxLanguageMain"))
-            print(request)
 
             data = pd.read_sql_query(f"""SELECT DISTINCT
             V.personalNumber as 'Личный номер ПК'

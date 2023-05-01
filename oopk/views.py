@@ -1,16 +1,16 @@
 from django.shortcuts import render
 from .models import EduLevelProgram, Program, DevelopeForm, PriemType
 from django.http import JsonResponse
-from .tasks import make_report_one
+from .tasks import make_report_xlsx, make_report_google
 
 from django.http import HttpResponse
 import base64
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
-from django.views.generic import TemplateView, View
+from django.views.generic import  View
 
-from .reports import ReportOne
+
 
 
 class Report(View):
@@ -48,13 +48,20 @@ class Report(View):
             self.postData = request.POST.dict()
             self.postData.update({"program":request.POST.getlist("program")})
             self.postData.update({"form":request.POST.getlist("form")})
-            #print(request.POST.getlist())
+            self.postData.update({"user":request.user.id})
+            
 
             #print(request.POST.dict())
-            task = make_report_one.delay(self.postData)
+            if self.postData.get("radioReportType") == "google":
+                task = make_report_google.delay(self.postData)
+                operation_type = "google"
+            else:
+                print("xlsx")
+                task = make_report_xlsx.delay(self.postData)
+                operation_type = "xlsx"
         
       
-            return JsonResponse({'task_id': task.id})
+            return JsonResponse({'task_id': task.id, "operation_type": operation_type})
   
        
 @csrf_exempt
@@ -63,14 +70,25 @@ def download_report_view(request):
     if request.method == 'POST' and request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
      
         task_id = request.POST.get('task_id')
-       
-        result = make_report_one.AsyncResult(task_id)
+        
+
+        if request.POST.get("operation_type") == "xlsx":
+            result = make_report_xlsx.AsyncResult(task_id)
+        else:
+            result = make_report_google.AsyncResult(task_id)
 
         if result.ready():
 
-            report_base64 = result.result
-   
-            return JsonResponse({'status': 'SUCCESS', 'file': report_base64, 'file_name': 'report.xlsx'})
+            result = result.result
+            
+            if request.POST.get("operation_type") == "xlsx":
+                
+                return JsonResponse({'status': 'SUCCESS', 'file': result, 'file_name': 'report.xlsx'})
+            else:
+                if result["error"]:
+                    pass
+                else:
+                    return JsonResponse({'status': 'SUCCESS', 'url': result["url"]})
         else:
             
             return JsonResponse({'status': 'in_progress'})

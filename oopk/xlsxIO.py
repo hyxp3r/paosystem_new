@@ -5,7 +5,7 @@ from openpyxl.utils import get_column_letter
 
 
 
-class ResponseXlsx:
+class XLSX_IO:
 
     def __init__(self, data) -> None:
 
@@ -15,14 +15,12 @@ class ResponseXlsx:
 
     def makeIO(self):
             
-        #self.data.to_excel(self.response, index = False, sheet_name='Отчет')
 
         writer = pd.ExcelWriter(self.response, engine='openpyxl')
 
         self.data.to_excel(writer, index=False, sheet_name='Sheet1')
 
-        # Получение объекта workbook
-        workbook = writer.book
+    
         worksheet = writer.sheets['Sheet1']
 
         for idx, col in enumerate(self.data):

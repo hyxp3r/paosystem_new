@@ -34,50 +34,66 @@ $(document).ready(function() {
         });
     });
 
+    function makeFile(file, file_name){
 
-    function checkTaskStatus(task_id) {
-        console.log("HI")
+        var decodedData = atob(file);
+        var byteNumbers = new Array(decodedData.length);
+        for (var i = 0; i < decodedData.length; i++) {
+            byteNumbers[i] = decodedData.charCodeAt(i);
+        }
+        var fileByteArray = new Uint8Array(byteNumbers);
+
+        // Создание объекта Blob из байтовых данных
+        var fileBlob = new Blob([fileByteArray], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+
+        // Создание ссылки на Blob
+        var downloadLink = document.createElement('a');
+        downloadLink.href = URL.createObjectURL(fileBlob);
+        downloadLink.download = file_name;
+         // Клик на ссылку для скачивания файла
+        downloadLink.click();
+         // Освобождение ресурсов Blob
+        URL.revokeObjectURL(downloadLink.href);
+        $('.alert-warning').hide() 
+        $('.report-ready-xlsx').show() 
+
+        
+    }
+    function checkTaskStatus(task_id, operation_type) {
+
         // Отправка Ajax-запроса на Django view для получения статуса задачи
         $.ajax({
             url: 'http://10.0.100.114:8000/oopk/oopk/report/getreport',
             type: 'POST',
             data: {
-                task_id: task_id
+                task_id: task_id,
+                operation_type: operation_type,
             },
             
             success: function(response) {
                 
                 if (response.status == 'SUCCESS') {
                     // Если задача выполнена успешно, отображение ссылки на скачивание отчета
-                 
-                    var decodedData = atob(response.file);
-                    var byteNumbers = new Array(decodedData.length);
-                    for (var i = 0; i < decodedData.length; i++) {
-                        byteNumbers[i] = decodedData.charCodeAt(i);
+                    if (operation_type == "xlsx"){
+
+                        makeFile(response.file, response.file_name)
+                    }else{
+                        $('.alert-warning').hide() 
+                        $('#google_href').attr("href", response.url)
+                        $('#google_href').text(response.url)
+                        $('.report-ready-google').show()
                     }
-                    var fileByteArray = new Uint8Array(byteNumbers);
-            
-                    // Создание объекта Blob из байтовых данных
-                    var fileBlob = new Blob([fileByteArray], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-            
-                    // Создание ссылки на Blob
-                    var downloadLink = document.createElement('a');
-                    downloadLink.href = URL.createObjectURL(fileBlob);
-                    downloadLink.download = response.file_name;
-                    $('.alert-warning').hide() 
-                    $('.alert-success').show() 
-                    // Клик на ссылку для скачивания файла
-                    downloadLink.click();
-            
-                    // Освобождение ресурсов Blob
-                    URL.revokeObjectURL(downloadLink.href);
+                
+
+                  
+                 
                 } else if (response.status == 'FAILURE') {
                     // Если задача завершена с ошибкой, отображение сообщения об ошибке
                     alert('Ошибка при создании отчета');
                 } else {
                     // Если задача все еще выполняется, продолжаем опрашивать статус
                     setTimeout(function() {
-                        checkTaskStatus(task_id);
+                        checkTaskStatus(task_id, operation_type);
                     }, 500);
                 }
             },
@@ -93,7 +109,8 @@ $(document).ready(function() {
         event.preventDefault();
         var form = $(this);
         const url = $(".customer_request").attr("data-url");
-        $('.report-ready').hide();
+        $('.report-ready-xlsx').hide();
+        $('.report-ready-google').hide();
 
         $.ajax({
             type: 'post',
@@ -104,7 +121,7 @@ $(document).ready(function() {
             success: function (data){
           
                 $('.report-making').show();
-                checkTaskStatus(data.task_id);
+                checkTaskStatus(data.task_id, data.operation_type);
             }
         }
         )

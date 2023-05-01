@@ -1,0 +1,8 @@
+#google_href{
+    color:rgb(86, 86, 86);
+    text-decoration: none;
+}
+#google_href:hover {
+    text-decoration: none;
+    color: rgb(44, 107, 127);
+}

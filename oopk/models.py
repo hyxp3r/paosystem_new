@@ -1,4 +1,5 @@
 from django.db import models
+from main.models import User
 
 # Create your models here.
 
@@ -81,3 +82,15 @@ class Status(models.Model):
         
         verbose_name = "Статус"
         verbose_name_plural = "Статус"
+
+
+#Google sheets creds
+class Google(models.Model):
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name = "Пользователь")
+    json = models.JSONField("Ключ", null=True, blank=True)
+
+class GoogleReport(models.Model):
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name = "Пользователь")
+    created_time = models.DateTimeField(auto_now_add=True)
