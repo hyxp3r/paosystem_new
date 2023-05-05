@@ -6,7 +6,7 @@ from .google import GoogleConnection, Create_Sheet, InsertData, Permissions, Cus
 @shared_task
 def make_report_xlsx(request):
 
-    data = ReportOne().get(request)
+    data = ReportOne(request = request).make_report()
     response = XLSX_IO(data).makeIO()
     return response
 
@@ -15,7 +15,7 @@ def make_report_google(request):
 
     result = {"url": "", "error": None}
 
-    data = ReportOne().get(request)
+    data = ReportOne(request = request).make_report()
     
     services = GoogleConnection(request.get("user")).build_services()
 

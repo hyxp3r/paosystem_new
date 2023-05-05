@@ -7,7 +7,7 @@ $(document).ready(function() {
 
         // Отправка Ajax-запроса на сервер
         $.ajax({
-            url: 'http://10.0.100.114:8000/oopk/oopk/report/filter',  // URL вашего представления
+            url: '/oopk/oopk/report/filter',  // URL вашего представления
             type: 'get',
             data: {
                 'filter_field1': filterValue1,
@@ -63,7 +63,7 @@ $(document).ready(function() {
 
         // Отправка Ajax-запроса на Django view для получения статуса задачи
         $.ajax({
-            url: 'http://10.0.100.114:8000/oopk/oopk/report/getreport',
+            url: '/oopk/oopk/report/getreport',
             type: 'POST',
             data: {
                 task_id: task_id,

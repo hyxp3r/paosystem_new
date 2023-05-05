@@ -115,13 +115,10 @@ class InsertData(GoogleErrors):
         self.service = service
         self.spreadsheet_id = spreadsheet_id
 
-    def dataClear(self):
 
-        self.data.fillna("")
 
     def insert(self):
 
-        self.dataClear()
 
         try:
             values = self.service.spreadsheets().values().batchUpdate(
