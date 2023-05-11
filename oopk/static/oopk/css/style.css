@@ -6,3 +6,13 @@
     text-decoration: none;
     color: rgb(44, 107, 127);
 }
+
+
+#report{
+    color:rgb(142, 143, 143);
+    text-decoration: none;
+}
+#report:hover {
+    text-decoration: none;
+    color:rgb(84, 85, 85);
+}

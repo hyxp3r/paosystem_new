@@ -36,7 +36,7 @@
 
       <div class="form-group">
         <label for="select2Form"> Форма обучения:</label>
-        <select name = "form" class="form-control" id="select2Form" multiple required >
+        <select name = "form" class="form-control" id="select2Form" multiple  >
 
             {% for form in forms %}
 
@@ -78,6 +78,11 @@
           <label class="form-check-label" for="checkboxProfile">Профиль</label>
         </div>
 
+        <div class = "form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxCompetition" name="checkboxCompetition">
+          <label class="form-check-label" for="checkboxCompetition">Тип конкурса</label>
+        </div>
+
       </div>
 
       <div class="form-group">
@@ -116,6 +121,9 @@
           <input type="radio" class="form-check-input" id="radioReportTypeSecond" name="radioReportType" value="google">
           <label class="form-check-label" for="radioReportTypeSecond">Google Sheets</label>
         </div>
+        
+        <label for="comment" id = "comment_label" style="display: none;">Коммнтарий к отчету</label>
+        <input type="text" class="form-control" id="comment" name = "comment" placeholder="Введите комментарий" style="display: none;">
  
       </div>
   
@@ -181,6 +189,7 @@
     });
     </script>
 <script src="{% static 'oopk/js/ajax.js' %}"></script>
+<script src="{% static 'oopk/js/funtions.js' %}"></script>
 {% endblock %}
 
 

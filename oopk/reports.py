@@ -34,9 +34,14 @@ class ReportOne(Connection, ReportDataOperation):
         
         self.connect()
 
-        programs = self.request.get("program")
-        forms = self.request.get("form")
+        programs = ", ".join(str(f"'{x}'") for x in self.request.get("program"))
+        if self.request.get("form"):
+            forms = ", ".join(str(f"'{x}'") for x in self.request.get("form"))
+            
 
+        if self.request.get("competitionType"):
+            competitionType = ", ".join(str(f"'{x}'") for x in self.request.get("competitionType"))
+        
 
         with self.conn:
 
@@ -46,6 +51,7 @@ class ReportOne(Connection, ReportDataOperation):
             ,V.fullFio as 'ФИО'
             ,V.developForm as 'Форма'
             ,V.programSetTitle as 'Направление'
+            {",V.competitionType as 'Тип конкурса'" if self.request.get("checkboxCompetition") else ""}
             {",Replace(ISNULL(PContact.PHONEMOBILE_P, ''), '+', '') 'Телефон'" if self.request.get("checkboxPhone") else ""}
             {",ISNULL(PContact.EMAIL_P, '') as 'E-mail'" if self.request.get("checkboxEmail") else ""}
             {",CAST(V.rating as int) as 'Сумма баллов'" if self.request.get("checkboxRating") else ""}
@@ -65,8 +71,9 @@ class ReportOne(Connection, ReportDataOperation):
             {"JOIN enr14_requested_comp_t EP on EP.REQUEST_ID = V.entrantRequestId" if self.request.get("checkboxProfile") else ""} 
 
             WHERE V.enrollmentCampaignYear = 2022
-            AND V.developForm in ({", ".join(str(f"'{x}'") for x in forms)})
-            AND V.programSetTitle in ({", ".join(str(f"'{x}'") for x in programs)})
+            {f"AND V.developForm in ({forms})" if self.request.get("form") else ""}
+            {f"AND V.competitionType in ({competitionType})" if self.request.get("competitionType") else ""}
+            AND V.programSetTitle in ({programs})
             {"AND L.MAIN_P = 1" if self.request.get("radioLanguage") == "main" else ""} 
             {"AND L.MAIN_P <> 1" if self.request.get("radioLanguage") == "second" else ""} 
             """, self.conn)

@@ -24,7 +24,7 @@ def make_report_google(request):
         result.update({"error": services["error"]})
         return result
     
-    sheet_data = Create_Sheet(user =request.get("user"),service = services["service"]).create()
+    sheet_data = Create_Sheet(user =request.get("user"),service = services["service"], comment = request.get("comment") ).create()
 
     if sheet_data["error"]:
         result.update({"error": sheet_data["error"]})

@@ -91,6 +91,14 @@ class Google(models.Model):
     json = models.JSONField("Ключ", null=True, blank=True)
 
 class GoogleReport(models.Model):
-    
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name = "Пользователь")
+
     created_time = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name = "Пользователь")
+    url = models.URLField("Ссылка на отчет", null = True, blank = True)
+    comment = models.TextField("Комментарий к отчету", max_length = 200, null = True, blank = True)
+
+
+    class Meta:
+
+        verbose_name = "Отчеты в Google"
+        verbose_name_plural = "Отчеты в Google"

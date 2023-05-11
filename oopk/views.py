@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import EduLevelProgram, Program, DevelopeForm, PriemType
+from .models import EduLevelProgram, Program, DevelopeForm, PriemType, GoogleReport
 from django.http import JsonResponse
 from .tasks import make_report_xlsx, make_report_google
 
@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 from django.views.generic import  View
+from django.core.paginator import Paginator
 
 
 
@@ -48,6 +49,7 @@ class Report(View):
             self.postData = request.POST.dict()
             self.postData.update({"program":request.POST.getlist("program")})
             self.postData.update({"form":request.POST.getlist("form")})
+            self.postData.update({"competitionType":request.POST.getlist("competitionType")})
             self.postData.update({"user":request.user.id})
             
 
@@ -112,8 +114,25 @@ class MyAjaxFilterView(View):
             data = {'filtered_data': list(filtered_data.values())}
 
             return JsonResponse(data)
-"""
-class Report(View):
 
-    pass
-"""
+class ReportTable(View):
+
+     template_name = 'oopk/report_table.html'
+
+
+     def get(self, request, *args, **kwargs):
+
+        report = GoogleReport.objects.select_related("user").order_by("-created_time")
+
+        paginator = Paginator(report, 10) # 10 элементов на страницу
+        page = request.GET.get('page')
+        items = paginator.get_page(page)
+
+        context = {}
+
+        context['reports'] = items
+
+
+        return render(request, self.template_name, context)
+
+

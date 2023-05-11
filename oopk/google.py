@@ -67,16 +67,15 @@ class GoogleConnection(GoogleErrors):
  
 class Create_Sheet(GoogleErrors):
 
-    def __init__(self, user: int, service) -> None:
+    def __init__(self, user: int, service, comment) -> None:
 
         super().__init__()
     
         self.user_inst = User.objects.get(pk = user)
+        self.comment = comment
         self.report = GoogleReport.objects.create(user = self.user_inst)
         self.service = service
 
-        
-        
         self.spreadsheet = {
                     'properties': {
                         'title': f'Отчет_{self.report.pk}'
@@ -98,6 +97,9 @@ class Create_Sheet(GoogleErrors):
             sheet_id = spreadsheet['sheets'][0]['properties']['sheetId']
             
             url = f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}"
+            self.report.url = url
+            self.report.comment = self.comment
+            self.report.save()
             self.result.update({"sheet_id": sheet_id, "spreadsheet_id": spreadsheet_id, "url": url})
         except:
             last_obj = GoogleReport.objects.latest('id')
