@@ -144,12 +144,3 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
-
-"""
-CELERY_BEAT_SCHEDULE = {
-    'monitoring': {
-        'task': 'oopk.tasks.update_monitoring_all',  # Полное имя функции вашей задачи
-        'schedule': crontab(minute='*/2'),  # Расписание выполнения задачи каждые 5 минут
-    },
-}
-"""

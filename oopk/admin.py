@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import PriemType, Program, DevelopeForm, Status, EduLevelProgram, Google, GoogleReport, Query, GoogleMonitoring, GoogleMonitoringFiles
+from .models import PriemType, Program, DevelopeForm, Status, EduLevelProgram, Google, GoogleReport, Query, GoogleMonitoring, GoogleMonitoringFiles, LogsCron
 
 
 
@@ -54,3 +54,7 @@ class GoogleMonitoringFilesAdmin(admin.ModelAdmin):
 
     list_display = ("name",)
 
+@admin.register(LogsCron)
+class LogsCronAdmin(admin.ModelAdmin):
+
+    list_display = ("name", "status", "created_at")

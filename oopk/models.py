@@ -156,4 +156,18 @@ class GoogleMonitoringFiles(models.Model):
         verbose_name = "Мониторинг файл"
         verbose_name_plural = "Мониторинг файл"
 
-    
+
+class LogsCron(models.Model):
+
+    created_at = models.DateTimeField(verbose_name="Дата завершения выполнения", auto_now_add=True)
+    name = models.CharField("Наименование задачи", max_length=155)
+    status = models.CharField("Статус", max_length=155)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+    class Meta:
+
+        verbose_name = "Логирование CRON"
+        verbose_name_plural = "Логирование CRON"

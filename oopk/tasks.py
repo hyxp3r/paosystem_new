@@ -2,7 +2,8 @@ from celery import shared_task
 from .reports import ReportOne, ReportDataOperation
 from .xlsxIO import XLSX_IO
 from .google import GoogleConnection, Create_Sheet, InsertData, Permissions, Custom, Clear
-from .models import GoogleMonitoringFiles
+from .models import GoogleMonitoringFiles, LogsCron
+
 
 
 
@@ -61,23 +62,31 @@ def make_report_google(request):
 @shared_task
 def update_monitoring_all():
 
+    name_task = "Обновление мониторинга ПК2023"
+    status = "Выполнено успешно"
+
+    
     monitoring_files = GoogleMonitoringFiles.objects.prefetch_related("monitoring").all()
     services = GoogleConnection(user = 1).build_services()
+    try:    
+        for file in monitoring_files:
+
+            sheets = file.monitoring.all().select_related("query").all()
+            spreadsheet_id = file.spreadsheet_id
+
+            for sheet in sheets:
+                    sheet_name = sheet.name
+                    query = sheet.query.query
+
+                    dataOperation = ReportDataOperation()
+                    data = dataOperation.make_query(query = query)
+                    data = dataOperation.clear_data(data = data) 
+                    clearData = Clear(service = services["service"], spreadsheet_id = spreadsheet_id, range_name = sheet_name).clear_data()
+                    insertData = InsertData(data = data, service = services["service"], spreadsheet_id = spreadsheet_id, range_name = sheet_name).insert()
+
+        LogsCron.objects.create(name = name_task, status = status)
         
-    for file in monitoring_files:
-
-        print("START")
-
-        sheets = file.monitoring.all().select_related("query").all()
-        spreadsheet_id = file.spreadsheet_id
-
-        for sheet in sheets:
-                sheet_name = sheet.name
-                query = sheet.query.query
-
-                dataOperation = ReportDataOperation()
-                data = dataOperation.make_query(query = query)
-                data = dataOperation.clear_data(data = data) 
-                clearData = Clear(service = services["service"], spreadsheet_id = spreadsheet_id, range_name = sheet_name).clear_data()
-                insertData = InsertData(data = data, service = services["service"], spreadsheet_id = spreadsheet_id, range_name = sheet_name).insert()
-                print(insertData)
+    except:
+        status = "Ошибка"
+        LogsCron.objects.create(name = name_task, status = status)
+                   
