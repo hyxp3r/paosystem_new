@@ -3,7 +3,7 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,6 +23,7 @@ ALLOWED_HOSTS = ["paosystem.nsuem.ru", "127.0.0.1", "10.0.100.114", "0.0.0.0"]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'django_celery_beat',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -136,15 +137,19 @@ EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_POST = 587
 
-REDIS_HOST = os.environ.get("HOST")
-REDIS_PORT = "6379"
-CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
-#CELERY_BROKER_URL = "redis://redis:6379"
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
 CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout" : 3600}
-CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
-#CELERY_RESULT_BACKEND = f"redis://redis:6379"
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND")
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 
-
+"""
+CELERY_BEAT_SCHEDULE = {
+    'monitoring': {
+        'task': 'oopk.tasks.update_monitoring_all',  # Полное имя функции вашей задачи
+        'schedule': crontab(minute='*/2'),  # Расписание выполнения задачи каждые 5 минут
+    },
+}
+"""

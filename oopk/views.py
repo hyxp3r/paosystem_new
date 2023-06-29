@@ -4,13 +4,13 @@ from django.http import JsonResponse
 from .tasks import make_report_xlsx, make_report_google
 
 from django.http import HttpResponse
-import base64
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 from django.views.generic import  View
 from django.core.paginator import Paginator
 
+from .google import GoogleConnection, DeleteData
 
 
 
@@ -27,12 +27,12 @@ class Report(View):
         self.postData = {}
     
     def get(self, request, *args, **kwargs):
-
+     
         eduLevel = EduLevelProgram.objects.all().order_by("name")
         program = Program.objects.all().order_by("code")
         form = DevelopeForm.objects.all().order_by("sort")
         finance = PriemType.objects.all().order_by("name")
-
+        
         context = {}
 
         context['eduLevel'] = eduLevel
@@ -47,18 +47,19 @@ class Report(View):
         if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
 
             self.postData = request.POST.dict()
+           
             self.postData.update({"program":request.POST.getlist("program")})
             self.postData.update({"form":request.POST.getlist("form")})
             self.postData.update({"competitionType":request.POST.getlist("competitionType")})
             self.postData.update({"user":request.user.id})
             
 
-            #print(request.POST.dict())
+         
             if self.postData.get("radioReportType") == "google":
                 task = make_report_google.delay(self.postData)
                 operation_type = "google"
             else:
-                print("xlsx")
+                
                 task = make_report_xlsx.delay(self.postData)
                 operation_type = "xlsx"
         
@@ -99,7 +100,7 @@ def download_report_view(request):
         return HttpResponse("Error: Invalid request method.")
 
 
-
+#фильтр для формы запросов
 class MyAjaxFilterView(View):
 
     def get(self, request, *args, **kwargs):
@@ -114,7 +115,8 @@ class MyAjaxFilterView(View):
             data = {'filtered_data': list(filtered_data.values())}
 
             return JsonResponse(data)
-
+        
+#Вывод данных в отчетную таблицу
 class ReportTable(View):
 
      template_name = 'oopk/report_table.html'
@@ -135,4 +137,26 @@ class ReportTable(View):
 
         return render(request, self.template_name, context)
 
+#Удаление отчета google
+@csrf_exempt
+def delete_sheet_view(request):
 
+   
+    result = {"success": True, "error": None}
+
+    if request.method == 'POST' and request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+
+    
+        services = GoogleConnection(request.user.pk).build_services()
+    
+        if services["error"]:
+            result.update({"success": False,"error": services["error"]})
+
+        spreadsheet_id = GoogleReport.objects.get(pk = request.POST.get("itemId")).spreadsheet_id
+      
+
+        delete_result = DeleteData(drive_service = services["drive_service"], spreadsheet_id=spreadsheet_id).delete()
+        GoogleReport.objects.get(pk = request.POST.get("itemId")).delete()
+
+        
+        return JsonResponse(result)

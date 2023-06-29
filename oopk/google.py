@@ -67,18 +67,19 @@ class GoogleConnection(GoogleErrors):
  
 class Create_Sheet(GoogleErrors):
 
-    def __init__(self, user: int, service, comment) -> None:
+    def __init__(self, user: int, service, name , comment) -> None:
 
         super().__init__()
     
         self.user_inst = User.objects.get(pk = user)
         self.comment = comment
+        self.name = name
         self.report = GoogleReport.objects.create(user = self.user_inst)
         self.service = service
 
         self.spreadsheet = {
                     'properties': {
-                        'title': f'Отчет_{self.report.pk}'
+                        'title': self.name
                     },
                     'sheets': [
                         {
@@ -98,7 +99,10 @@ class Create_Sheet(GoogleErrors):
             
             url = f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}"
             self.report.url = url
-            self.report.comment = self.comment
+            self.report.spreadsheet_id = spreadsheet_id
+            if self.comment:
+                self.report.comment = self.comment
+            self.report.name = self.name
             self.report.save()
             self.result.update({"sheet_id": sheet_id, "spreadsheet_id": spreadsheet_id, "url": url})
         except:
@@ -111,11 +115,12 @@ class Create_Sheet(GoogleErrors):
 
 class InsertData(GoogleErrors):
 
-    def __init__(self, data, service, spreadsheet_id) -> None:
+    def __init__(self, data, service, spreadsheet_id, range_name = "Отчет") -> None:
         super().__init__()
         self.data = data
         self.service = service
         self.spreadsheet_id = spreadsheet_id
+        self.range_name = range_name
 
 
 
@@ -129,7 +134,7 @@ class InsertData(GoogleErrors):
             {
                 "valueInputOption": "USER_ENTERED",
                 "data": [
-                    {"range": "Отчет!A1",
+                    {"range": f"{self.range_name}!A1",
                         "majorDimension": "ROWS",
                         "values": self.data.T.reset_index().T.values.tolist()}]
             }
@@ -165,8 +170,21 @@ class Permissions(GoogleErrors):
         
 
 
+class Clear:
 
+    def __init__(self, service, spreadsheet_id, range_name) -> None:
+
+        self.service = service
+        self.spreadsheet_id = spreadsheet_id
+        self.range_name = range_name
+
+    def clear_data(self):
+        
+        self.service.spreadsheets().values().clear(spreadsheetId=self.spreadsheet_id, range=f'{self.range_name}!A1:Z').execute()
+        
+    
 class Custom(GoogleErrors):
+
 
     def __init__(self, service, spreadsheet_id, sheet_id, columns) -> None:
         super().__init__()
@@ -175,10 +193,18 @@ class Custom(GoogleErrors):
         self.sheet_id = sheet_id
         self.columns = columns
 
-    def make_custom(self):
+        self.requests = []
 
-        requests = [
-    {
+        self.custom_variants = {
+            "column_resize": self.column_resize,
+            "froze_row": self.froze_row,
+            "center_data": self.center_data
+
+        }
+
+    def column_resize(self):
+
+        self.requests.append( {
         'autoResizeDimensions': {
             'dimensions': {
                 'sheetId': self.sheet_id,
@@ -187,8 +213,12 @@ class Custom(GoogleErrors):
                 'endIndex': self.columns
             }
         }
-    },
-    {
+    })
+        
+    
+    def froze_row(self):
+        
+        self.requests.append({
         'updateSheetProperties': {
             'properties': {
                 'sheetId': self.sheet_id,
@@ -198,9 +228,11 @@ class Custom(GoogleErrors):
             },
             'fields': 'gridProperties.frozenRowCount'
         }
-    },
+    })
+    
+    def center_data(self):
 
-    {
+        self.requests.append({
         'repeatCell': {
             'range': {
                 'sheetId': self.sheet_id,
@@ -219,11 +251,17 @@ class Custom(GoogleErrors):
             },
             'fields': 'userEnteredFormat(textFormat,horizontalAlignment)'
         }
-    }
-]       
+    })
+        
+    def make_custom(self, *args):
+
+        for user_variant in args:
+            for k, variant in self.custom_variants.items():
+                if user_variant == k:
+                    variant()
         try:
             batch_update_request = self.service.spreadsheets().batchUpdate(
-            spreadsheetId=self.spreadsheet_id, body={'requests': requests})
+            spreadsheetId=self.spreadsheet_id, body={'requests': self.requests})
             batch_update_response = batch_update_request.execute()
         except:
              self.result.update({"error":"Ошибка при добавлении кастомизации"})
@@ -232,8 +270,22 @@ class Custom(GoogleErrors):
        
 
            
+class DeleteData(GoogleErrors):
 
+    def __init__(self, drive_service, spreadsheet_id) -> None:
+        super().__init__()
+        self.drive_service = drive_service
+        self.spreadsheet_id = spreadsheet_id
 
+    
+    def delete(self):
 
-  
+        try:
+            self.drive_service.files().delete(fileId=self.spreadsheet_id).execute()
+        except:
+            self.result.update({"error":"Ошибка при удалении файла!"})
+     
+        
+        return self.result
+
 

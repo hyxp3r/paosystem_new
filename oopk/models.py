@@ -87,7 +87,7 @@ class Status(models.Model):
 #Google sheets creds
 class Google(models.Model):
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name = "Пользователь")
+    user = models.ManyToManyField(User, verbose_name = "Пользователи" , related_name = "key_users")
     json = models.JSONField("Ключ", null=True, blank=True)
 
 class GoogleReport(models.Model):
@@ -95,10 +95,65 @@ class GoogleReport(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name = "Пользователь")
     url = models.URLField("Ссылка на отчет", null = True, blank = True)
+    spreadsheet_id = models.CharField("ID документа", max_length= 155 ,null=True, blank=True)
+    name = models.CharField("Наименование отчета", max_length = 50, null = False, blank = True )
     comment = models.TextField("Комментарий к отчету", max_length = 200, null = True, blank = True)
+
+    def __str__(self) -> str:
+        return self.name
 
 
     class Meta:
 
         verbose_name = "Отчеты в Google"
         verbose_name_plural = "Отчеты в Google"
+
+
+class Query(models.Model):
+
+    name = models.CharField("Наименование запроса", max_length = 150)
+    query  = models.TextField("Запрос")
+    comment = models.TextField("Комментарий к запросу", null = True, blank = True)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+    class Meta:
+
+        verbose_name = "Запросы"
+        verbose_name_plural = "Запросы"
+
+class GoogleMonitoring(models.Model):
+
+    name = models.CharField("Наименование листа", max_length=150)
+    id_sheet = models.CharField("ID листа", max_length=150)
+    query = models.ForeignKey(Query, on_delete = models.CASCADE, verbose_name = "Запрос на формирование" )
+    comment = models.TextField("Комментарий к отчету", max_length = 200, null = True, blank = True)
+    status = models.BooleanField("Запущено?", default=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+    class Meta:
+
+        verbose_name = "Мониторинг"
+        verbose_name_plural = "Мониторинг"
+
+class GoogleMonitoringFiles(models.Model):
+
+    name = models.CharField("Наименование", max_length = 150)
+    spreadsheet_id = models.CharField("ID документа", max_length=255)
+    monitoring = models.ManyToManyField(GoogleMonitoring, verbose_name = "Мониторинг" , related_name = "monitoring_files")
+
+    def __str__(self) -> str:
+        return self.name
+
+
+    class Meta:
+
+        verbose_name = "Мониторинг файл"
+        verbose_name_plural = "Мониторинг файл"
+
+    
