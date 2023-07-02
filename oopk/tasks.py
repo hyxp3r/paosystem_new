@@ -95,21 +95,36 @@ def update_monitoring_all():
 @shared_task
 def update_air_grant():
 
-    name_task = "Гранты 235+"
+    name_task = "Гранты 235+ (air)"
     status = "Выполнено успешно"
     data_operation = ReportDataOperation()
-
-    table = AirtableTables.objects.select_related("query").filter(name = "Гранты_ВО_2023")[0]
+    try:
+        table = AirtableTables.objects.select_related("query").filter(name = "Гранты_ВО_2023")[0]
+    except:
+        LogsCron.objects.create(name = name_task, status = "Ошибка при получении записи PostgreSQL")
+        raise ConnectionError
+    
     table_name = "Гранты_ВО_2023"
     base_id = table.base.base_id
     query = table.query.body
     
     airtable = AirtableDataOperations(user_id = 1, base_id = base_id, table_name = table_name)
 
-    data = data_operation.make_query(query = query)
-    data = data_operation.clear_data(data = data)
-    records = data.to_dict("records")
-    not_found = airtable.comparison(records = records, view = "python_import")
+    try:
+        data = data_operation.make_query(query = query)
+        data = data_operation.clear_data(data = data)
+        records = data.to_dict("records")
+    except:
+        LogsCron.objects.create(name = name_task, status = "Ошибка Tandem")
+        raise ConnectionError
 
-    result = airtable.insert_batch(records = not_found)
+    try:
+        not_found = airtable.comparison(records = records, view = "python_import")
+        result = airtable.insert_batch(records = not_found)
+    except:
+        LogsCron.objects.create(name = name_task, status = "Ошибка при работе с AirTable")
+        raise ConnectionError
+    
+    LogsCron.objects.create(name = name_task, status = status)
+
 

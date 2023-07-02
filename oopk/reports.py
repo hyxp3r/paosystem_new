@@ -58,12 +58,14 @@ class ReportOne(ReportDataOperation):
         ,V.developForm as 'Форма'
         ,V.programSetTitle as 'Направление'
         {",V.competitionType as 'Тип конкурса'" if self.request.get("checkboxCompetition") else ""}
+        {",V.state as 'Статус абитуриента'" if self.request.get("checkboxStatus") else ""}
         {",Replace(ISNULL(PContact.PHONEMOBILE_P, ''), '+', '') 'Телефон'" if self.request.get("checkboxPhone") else ""}
         {",ISNULL(PContact.EMAIL_P, '') as 'E-mail'" if self.request.get("checkboxEmail") else ""}
         {",CAST(V.rating as int) as 'Сумма баллов'" if self.request.get("checkboxRating") else ""}
         {",V.eduDocumentAverageMark as 'Средний балл ДОО'" if self.request.get("checkboxDocumentRating") else ""}
         {",FL.TITLE_P as 'Язык'" if self.request.get("radioLanguage") else ""} 
         {",EP.COMMENT_P as 'Профиль'" if self.request.get("checkboxProfile") else ""} 
+        {",CASE WHEN V.originalDocumentHandedIn = 1 then 'Оригинал' ELSE 'Копия' end as 'Оригинал / Копия'" if self.request.get("checkboxOriginalHandIn") else ""}
         
         FROM Tandem_prod.dbo.enr_req_competition_ext_view AS V
         
