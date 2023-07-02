@@ -57,6 +57,7 @@ class ReportOne(ReportDataOperation):
         ,V.fullFio as 'ФИО'
         ,V.developForm as 'Форма'
         ,V.programSetTitle as 'Направление'
+        ,V.priority as 'Приоритет'
         {",V.competitionType as 'Тип конкурса'" if self.request.get("checkboxCompetition") else ""}
         {",V.state as 'Статус абитуриента'" if self.request.get("checkboxStatus") else ""}
         {",Replace(ISNULL(PContact.PHONEMOBILE_P, ''), '+', '') 'Телефон'" if self.request.get("checkboxPhone") else ""}
@@ -66,6 +67,7 @@ class ReportOne(ReportDataOperation):
         {",FL.TITLE_P as 'Язык'" if self.request.get("radioLanguage") else ""} 
         {",EP.COMMENT_P as 'Профиль'" if self.request.get("checkboxProfile") else ""} 
         {",CASE WHEN V.originalDocumentHandedIn = 1 then 'Оригинал' ELSE 'Копия' end as 'Оригинал / Копия'" if self.request.get("checkboxOriginalHandIn") else ""}
+        {",CASE WHEN V.needDormitory = 1 then 'Да' ELSE 'Нет' end as 'Необходимость в общежитии'" if self.request.get("checkboxNeedDormitory") else ""}
         
         FROM Tandem_prod.dbo.enr_req_competition_ext_view AS V
         
