@@ -2,7 +2,8 @@ from celery import shared_task
 from .reports import ReportOne, ReportDataOperation
 from .xlsxIO import XLSX_IO
 from .google import GoogleConnection, Create_Sheet, InsertData, Permissions, Custom, Clear
-from .models import GoogleMonitoringFiles, LogsCron
+from .models import GoogleMonitoringFiles, LogsCron, Query, AirtableTables
+from .airtable import AirtableDataOperations
 
 
 
@@ -76,7 +77,7 @@ def update_monitoring_all():
 
             for sheet in sheets:
                     sheet_name = sheet.name
-                    query = sheet.query.query
+                    query = sheet.query.body
 
                     dataOperation = ReportDataOperation()
                     data = dataOperation.make_query(query = query)
@@ -90,3 +91,25 @@ def update_monitoring_all():
         status = "Ошибка"
         LogsCron.objects.create(name = name_task, status = status)
                    
+
+@shared_task
+def update_air_grant():
+
+    name_task = "Гранты 235+"
+    status = "Выполнено успешно"
+    data_operation = ReportDataOperation()
+
+    table = AirtableTables.objects.select_related("query").filter(name = "Гранты_ВО_2023")[0]
+    table_name = "Гранты_ВО_2023"
+    base_id = table.base.base_id
+    query = table.query.body
+    
+    airtable = AirtableDataOperations(user_id = 1, base_id = base_id, table_name = table_name)
+
+    data = data_operation.make_query(query = query)
+    data = data_operation.clear_data(data = data)
+    records = data.to_dict("records")
+    not_found = airtable.comparison(records = records, view = "python_import")
+
+    result = airtable.insert_batch(records = not_found)
+
