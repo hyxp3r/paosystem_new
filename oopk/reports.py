@@ -86,6 +86,7 @@ class ReportOne(ReportDataOperation):
         AND V.programSetTitle in ({programs})
         {"AND L.MAIN_P = 1" if self.request.get("radioLanguage") == "main" else ""} 
         {"AND L.MAIN_P <> 1" if self.request.get("radioLanguage") == "second" else ""} 
+        {"AND V.enrOrderNumber is not null AND V.enrExtractCancelled = 0" if self.request.get("checkboxOrder") else ""}
         """
         return data
          
