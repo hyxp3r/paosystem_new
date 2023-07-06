@@ -1,5 +1,5 @@
 from airtable import Airtable
-from .models import AirtablePersonal
+from system.models import AirtablePersonal
 
 
 class AirTableConnection:
