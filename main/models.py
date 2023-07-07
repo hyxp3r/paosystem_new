@@ -14,3 +14,9 @@ class User(AbstractUser):
         today = date.today()
         age = today.year - self.dateBith.year - ((today.month, today.day) < ( self.dateBith.month,  self.dateBith.day))
         return age
+    
+    def get_FIO(self):
+
+        fio = self.first_name + " " + self.last_name
+
+        return fio

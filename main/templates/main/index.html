@@ -18,8 +18,8 @@
 
     <link href="{% static 'main/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
     <link href="{% static 'main/css/sb-admin-2.css' %}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 
     {% block link %}
     {% endblock %}
@@ -114,9 +114,21 @@
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="#">Раз</a>
-                        <a class="collapse-item" href="#">Два</a>
-                        <a class="collapse-item" href="#">Три</a>
+                        <a class="collapse-item" href="{% url 'report' %}">По абитуриентам</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReportsTables"
+                    aria-expanded="true" aria-controls="collapseReportsTables">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Список отчетов</span>
+                </a>
+                <div id="collapseReportsTables" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="{% url 'report_table' %}">Google Sheets</a>
+
                     </div>
                 </div>
             </li>
@@ -245,7 +257,7 @@
 
 
     <!-- Bootstrap core JavaScript-->
-    <script src="{% static 'main/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'main/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
     <!-- Core plugin JavaScript-->
@@ -258,9 +270,13 @@
     <script src="{% static 'main/vendor/chart.js/Chart.min.js' %}"></script>
 
     <!-- Page level custom scripts -->
+
+
+{% block scripts %}
+    <!-- Page level custom scripts -->
     <script src="{% static 'main/js/demo/chart-area-demo.js' %}"></script>
     <script src="{% static 'main/js/demo/chart-pie-demo.js' %}"></script>
-
+{% endblock %}
 </body>
 
 </html>
