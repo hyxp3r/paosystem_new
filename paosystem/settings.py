@@ -16,7 +16,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["paosystem.nsuem.ru", "127.0.0.1", "10.0.100.114", "0.0.0.0"]
+ALLOWED_HOSTS = ["birzha.nsuem.ru", "127.0.0.1", "10.0.100.114", "0.0.0.0"]
 
 
 # Application definition
@@ -120,7 +120,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = '/static/'
 LOGIN_URL = "login"
 LOGIN_REDIRECT = "/"
 
