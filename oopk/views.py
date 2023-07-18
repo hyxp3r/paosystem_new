@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import EduLevelProgram, Program, DevelopeForm, PriemType, GoogleReport
+from .models import EduLevelProgram, Program, DevelopeForm, PriemType, GoogleReport, Status
 from django.http import JsonResponse
 from .tasks import make_report_xlsx, make_report_google
 
@@ -32,6 +32,7 @@ class Report(View):
         program = Program.objects.all().order_by("code")
         form = DevelopeForm.objects.all().order_by("sort")
         finance = PriemType.objects.all().order_by("name")
+        status = Status.objects.all().order_by("name")
         
         context = {}
 
@@ -39,6 +40,7 @@ class Report(View):
         context['programs'] = program
         context['forms'] = form
         context['typePriem'] = finance
+        context['status'] = status
 
         return render(request, self.template_name, context)
     
@@ -51,6 +53,7 @@ class Report(View):
             self.postData.update({"program":request.POST.getlist("program")})
             self.postData.update({"form":request.POST.getlist("form")})
             self.postData.update({"competitionType":request.POST.getlist("competitionType")})
+            self.postData.update({"abiturstatus":request.POST.getlist("abiturstatus")})
             self.postData.update({"user":request.user.id})
             
 
@@ -110,7 +113,7 @@ class MyAjaxFilterView(View):
             filter_value = request.GET.get('filter_field1')
             
             # Фильтрация данных на основе значений выбранных полей
-            filtered_data = Program.objects.filter(eduLevel__tandem_name = filter_value)
+            filtered_data = Program.objects.filter(eduLevel__name = filter_value)
             # Пример формирования данных для отправки в JSON-формате
             data = {'filtered_data': list(filtered_data.values())}
 

@@ -14,11 +14,11 @@
 
     <div class="form-group">
         <label for="select2EduLevel">Уровень образования:</label>
-        <select name = "EduLevel" class="form-control" id="select2EduLevel" required>
+        <select name = "compony" class="form-control" id="select2EduLevel" required>
             
             {% for level in eduLevel %}
             
-            <option value="{{level.tandem_name}}"> {{level.name}}</option>
+            <option value="{{level.name}}"> {{level.name}}</option>
 
             {% endfor %}
    
@@ -26,7 +26,7 @@
       </div>
       <div class="form-group">
         <label for="select2Program">Направление подготовки:</label>
-        <select name = "program" class="form-control" id="select2Program" multiple disabled required >
+        <select name = "program" class="form-control" id="select2Program" multiple disabled >
             {% for program in programs %}
             <option value="{{program.code}}">{{program.makeProgram}}</option>
             {% endfor %}
@@ -60,6 +60,20 @@
         </select>
       </div>
 
+
+      <div class="form-group">
+        <label for="select2abiturstatus"> Состояние абитуриента:</label>
+        <select name = "abiturstatus" class="form-control" id="select2abiturstatus" multiple >
+
+            {% for stat in status %}
+
+             <option value="{{stat.name}}">{{stat.name}}</option>
+
+             {% endfor %}
+     
+        </select>
+      </div>
+
       <div class="form-group">
         <label for="form-group"><h5>Доп параметры</h5></label>
 
@@ -74,6 +88,14 @@
           <input type="checkbox" class="form-check-input" id="checkboxDocumentRating" name="checkboxDocumentRating">
           <label class="form-check-label" for="checkboxDocumentRating">Средний балл ДОО</label>
         </div>
+
+        <div class = "form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxMinRating" name="checkboxMinRating">
+          <label class="form-check-label" for="checkboxMinRating">Ограничить балл?</label>
+        </div>
+       
+        <input type="number" class="form-control" id="minrating" placeholder="Введите балл" name = "minrating" style="display: none;">
+      
 
       </div>
 
@@ -201,6 +223,9 @@
         closeOnSelect: false
       });
       $('#select2Form').select2({
+        closeOnSelect: false
+      });
+      $('#select2abiturstatus').select2({
         closeOnSelect: false
       });
       $('#select2competitionType').select2({

@@ -18,3 +18,18 @@ $(document).ready(function() {
       }
     });
   });
+
+  $(document).ready(function() {
+    $('#checkboxMinRating').change(function() {
+      if ($(this).is(':checked')) {
+
+        $('#minrating').show();
+        $('#minrating').prop('required', true);
+        
+      }
+      else {
+        $('#minrating').hide();
+        $('#minrating').prop('required', false);
+      }
+    });
+  });

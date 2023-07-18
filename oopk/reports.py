@@ -42,8 +42,9 @@ class ReportOne(ReportDataOperation):
 
     def prepare_data(self):
         
+        if self.request.get("program"):
+            programs = ", ".join(str(f"'{x}'") for x in self.request.get("program"))
 
-        programs = ", ".join(str(f"'{x}'") for x in self.request.get("program"))
         if self.request.get("form"):
             forms = ", ".join(str(f"'{x}'") for x in self.request.get("form"))
             
@@ -51,6 +52,11 @@ class ReportOne(ReportDataOperation):
         if self.request.get("competitionType"):
             competitionType = ", ".join(str(f"'{x}'") for x in self.request.get("competitionType"))
         
+        if self.request.get("abiturstatus"):
+            abiturstatus = ", ".join(str(f"'{x}'") for x in self.request.get("abiturstatus"))
+
+        if self.request.get("checkboxMinRating"):
+            minRating = self.request.get("minrating")
 
         data = f"""SELECT DISTINCT
         V.personalNumber as 'Личный номер ПК'
@@ -80,13 +86,16 @@ class ReportOne(ReportDataOperation):
         {"JOIN personforeignlanguage_t L on P.ID = L.PERSON_ID JOIN foreignlanguage_t FL on L.LANGUAGE_ID = FL.ID" if self.request.get("radioLanguage") else ""} 
         {"JOIN enr14_requested_comp_t EP on EP.REQUEST_ID = V.entrantRequestId" if self.request.get("checkboxProfile") else ""} 
 
-        WHERE V.enrollmentCampaignYear = 2023
+        WHERE V.enrollmentCampaign = '{self.request.get("compony")}'
         {f"AND V.developForm in ({forms})" if self.request.get("form") else ""}
         {f"AND V.competitionType in ({competitionType})" if self.request.get("competitionType") else ""}
-        AND V.programSetTitle in ({programs})
+        {f"AND V.programSetTitle in ({programs})"  if self.request.get("program") else ""}
+        {f"AND V.state in ({abiturstatus})"  if self.request.get("abiturstatus") else ""}
         {"AND L.MAIN_P = 1" if self.request.get("radioLanguage") == "main" else ""} 
         {"AND L.MAIN_P <> 1" if self.request.get("radioLanguage") == "second" else ""} 
         {"AND V.enrOrderNumber is not null AND V.enrExtractCancelled = 0" if self.request.get("checkboxOrder") else ""}
+
+        {f"AND CAST(V.rating as int) >= {minRating}" if self.request.get("checkboxMinRating")  else ""} 
         """
         return data
          
