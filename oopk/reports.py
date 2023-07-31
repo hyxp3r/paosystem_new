@@ -73,6 +73,8 @@ class ReportOne(ReportDataOperation):
         {",FL.TITLE_P as 'Язык'" if self.request.get("radioLanguage") else ""} 
         {",EP.COMMENT_P as 'Профиль'" if self.request.get("checkboxProfile") else ""} 
         {",CASE WHEN V.originalDocumentHandedIn = 1 then 'Оригинал' ELSE 'Копия' end as 'Оригинал / Копия'" if self.request.get("checkboxOriginalHandIn") else ""}
+        {",DK.Title_p 'Документ об образовании'" if self.request.get("checkboxDocumentKind") else ""}
+        {",EL.SHORTTITLE_P as 'Уровень образования в ДОО'" if self.request.get("checkboxDocumentEduLevel") else ""}
         {",CASE WHEN V.needDormitory = 1 then 'Да' ELSE 'Нет' end as 'Необходимость в общежитии'" if self.request.get("checkboxNeedDormitory") else ""}
         
         FROM Tandem_prod.dbo.enr_req_competition_ext_view AS V
@@ -85,6 +87,7 @@ class ReportOne(ReportDataOperation):
 
         {"JOIN personforeignlanguage_t L on P.ID = L.PERSON_ID JOIN foreignlanguage_t FL on L.LANGUAGE_ID = FL.ID" if self.request.get("radioLanguage") else ""} 
         {"JOIN enr14_requested_comp_t EP on EP.REQUEST_ID = V.entrantRequestId" if self.request.get("checkboxProfile") else ""} 
+        {"JOIN person_edu_doc_t PD on P.MAINEDUDOCUMENT_ID = PD.ID JOIN c_edu_doc_kind_t DK on DK.ID = PD.EDUDOCUMENTKIND_ID JOIN c_edu_level_t EL on PD.EDULEVEL_ID = EL.ID" if self.request.get("checkboxDocumentKind") or self.request.get("checkboxDocumentEduLevel")  else ""}
 
         WHERE V.enrollmentCampaign = '{self.request.get("compony")}'
         {f"AND V.developForm in ({forms})" if self.request.get("form") else ""}
