@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import EduLevelProgram, Program, DevelopeForm, PriemType, GoogleReport, Status
 from django.http import JsonResponse
-from .tasks import make_report_xlsx, make_report_google
+from .tasks import make_report_xlsx, make_report_google, register_entrant
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -69,7 +69,8 @@ class Report(View):
       
             return JsonResponse({'task_id': task.id, "operation_type": operation_type})
   
-       
+
+        
 @csrf_exempt
 def download_report_view(request):
 
@@ -163,3 +164,54 @@ def delete_sheet_view(request):
 
         
         return JsonResponse(result)
+
+#------------------------------------------
+#Exames
+
+class ExamRegistration(View):
+    template_name = 'oopk/exam_registration.html'
+
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.data = {
+            "success": True,
+            "errors": None
+        }
+
+        self.postData = {}
+    
+    def get(self, request, *args, **kwargs):
+     
+
+        return render(request, self.template_name)  
+    
+    def post(self, request, *args, **kwargs):
+
+        self.postData = request.POST.dict()
+
+        task = register_entrant.delay(self.postData)
+ 
+        return JsonResponse({'task_id': task.id})
+    
+
+@csrf_exempt
+def download_reg_file_view(request):
+
+    if request.method == 'POST' and request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+     
+        task_id = request.POST.get('task_id')
+        
+        result = register_entrant.AsyncResult(task_id)
+      
+        if result.ready():
+
+            result = result.result
+            
+            return JsonResponse({'status': 'SUCCESS', 'file': result, 'file_name': 'reg.csv'})
+           
+        else:
+            
+            return JsonResponse({'status': 'in_progress'})
+    else:
+       
+        return HttpResponse("Error: Invalid request method.")

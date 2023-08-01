@@ -1,6 +1,6 @@
 from celery import shared_task
-from .reports import ReportOne
-from .xlsxIO import XLSX_IO
+from .reports import ReportOne, ExamRegistration
+from .xlsxIO import XLSX_IO, CSV_IO
 from .google import GoogleConnection, Create_Sheet, InsertData, Permissions, Custom
 
 
@@ -55,3 +55,11 @@ def make_report_google(request):
 
     
    
+@shared_task
+def register_entrant(request):
+
+    data = ExamRegistration(request = request).reg_exam()
+
+    response = CSV_IO(data = data).makeIO()
+
+    return response
