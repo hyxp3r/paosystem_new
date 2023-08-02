@@ -191,6 +191,25 @@ class ExamWrite(ReportDataOperation):
         
             end  as 'group1'
             """
+            group_where = """
+            case
+            
+            when D.TITLE_P = 'История' then 'общеобразовательный 1'
+            when D.TITLE_P = 'История  (профильность: Юридические науки)' then 'юридические 1'
+            when D.TITLE_P = 'История  (профильность: Гуманитарные науки)' then 'гуманитарные 1'
+            
+            when D.TITLE_P = 'Английский язык' then 'английский язык 1'
+            when D.TITLE_P = 'Немецкий язык' then 'немецкий язык 1'
+            when D.TITLE_P = 'Французский язык' then 'французский язык 1'
+            
+            when D.TITLE_P = 'Биология' then 'общеобразовательный'
+            when D.TITLE_P = 'Биология (профильность: Гуманитарные науки)' then 'гуманитарные науки'
+            
+            when D.TITLE_P = 'География' then 'общеобразовательный'
+            when D.TITLE_P = 'География (профильность:Технические науки)' then 'технические науки'
+        
+            end
+            """
         else:
             group = ""
         
@@ -270,6 +289,7 @@ class ExamWrite(ReportDataOperation):
         where  CONVERT(date,SC.DURATIONBEGIN_P) BETWEEN '{self.request.get("start_date")}' AND '{self.request.get("end_date")}'
         and  V.enrollmentCampaign = '{self.request.get("compony")}'
         {f"AND D.TITLE_P in ({exam})" if self.request.get("exam") else ""}
+        {f"AND {group} is not null" if self.request.get("group") == "Да" else ""}
  
         """
         
