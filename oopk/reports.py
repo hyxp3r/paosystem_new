@@ -80,6 +80,8 @@ class ReportOne(ReportDataOperation):
         {",PRelative.PHONES_P as 'Контактный телефон родственника'" if self.request.get("checkboxRelativePhone") else "" }
         {",PRelative.EMAIL_P as 'E-mail родственника'" if self.request.get("checkboxRelativeEmail") else ""  }
         {",RelativeDegree.TITLE_P as 'Степень родства'" if self.request.get("checkboxRelativeDegree") else "" }
+        {",V.enrOrderNumber 'Номер приказа'" if self.request.get("checkboxOrderDate") else ""}
+        {",convert(char, V.enrOrderDate, 104) 'Дата приказа'" if self.request.get("checkboxOrderDate") else "" }
         FROM Tandem_prod.dbo.enr_req_competition_ext_view AS V
         
         JOIN Tandem_prod.dbo.ENR14_REQUEST_T R ON R.ENTRANT_ID = V.entrantId
@@ -272,6 +274,65 @@ class ExamWrite(ReportDataOperation):
         """
         
         return data 
+    
+    def write_exam(self):
+
+        data = self.prepare_data()
+        data = self.make_query(data)
+        data = self.clear_data(data)
+
+        return data
+    
+
+class ExamMail(ReportDataOperation):
+
+    def __init__(self, request) -> None:
+        self.request = request
+
+
+    def prepare_data(self):
+
+        data = f"""
+        select distinct
+
+        EG.TITLE_P '№ ЭГ' -- Номер экзаменационной группы (потока ВИ) для идентификации человека в ведомостях
+        ,D.TITLE_P 'Вступительное испытание'
+        ,CONVERT(varchar, SC.DURATIONBEGIN_P, 104) 'Начало' -- Дата проведения экзамена
+        ,V.personalNumber 'Личный номер'
+        ,'1' + REVERSE(V.personalNumber * 4) 'password' -- Еще раз генерируется пароль для рассылки 
+        ,ISNULL(V.firstName, '') + ' ' + ISNULL(V.middleName, '') 'Обращение' -- Только Имя и Отчество для того, чтобы в письме написать "Добрый день, ..."
+        ,V.fullFio 'ФИО Абитуриента' -- Для идентификации, отметке об участии 
+        ,ISNULL(PContact.EMAIL_P, '') 'Почта' -- Почта абитуриента, на которую будет направлено письмо с инструкцией + логином + паролем
+
+        -- Создаются пустые столбцы с заголовками, чтобы в них в Экселе вставить значения из вспомогательных файлов
+        ,'' 'Тест Moodle' -- Ссылка на Курс в Мудле (мы вставляли вручную в этот файл, но можно дополнить в скрипте, чтобы выводилось автоматически)
+        ,'' 'ZOOM URL' -- Ссылка на подключение к Зуму (включая токен, чтобы при переходе не надо было вводить пароль)
+        ,'' 'ZOOM ID' -- Только Идентификатор конференции
+        ,'' 'ZOOM PWD' -- Пароль для подключения к Зуму по Идентификатору
+
+        from enr14_exam_group_t EG
+        join enr14_exam_pass_discipline_t EPD on EPD.EXAMGROUP_ID = EG.ID
+        join enr14_camp_discipline_t CD on CD.ID = EG.DISCIPLINE_ID
+        join enr14_c_discipline_t D on D.ID = CD.DISCIPLINE_ID
+
+        join enr14_exam_group_sch_event_t SCHEV on SCHEV.EXAMGROUP_ID = EG.ID
+        join enr14_exam_sched_event_t EVE on EVE.ID = SCHEV.EXAMSCHEDULEEVENT_ID
+        join sc_event SC on SC.ID = EVE.SCHEDULEEVENT_ID
+
+        join Tandem_prod.dbo.enr_req_competition_ext_view V on V.entrantId = EPD.ENTRANT_ID
+        JOIN Tandem_prod.dbo.ENR14_REQUEST_T R ON R.ENTRANT_ID = V.entrantId
+        JOIN Tandem_prod.dbo.identitycard_t IC ON IC.ID = R.IDENTITYCARD_ID
+        JOIN Tandem_prod.dbo.PERSON_T P on P.ID = IC.PERSON_ID 
+        JOIN Tandem_prod.dbo.personcontactdata_t PContact ON P.CONTACTDATA_ID = PContact.ID
+
+        where CONVERT(date,SC.DURATIONBEGIN_P) BETWEEN '{self.request.get("start_date")}' AND '{self.request.get("end_date")}'
+
+        ORDER BY D.TITLE_P, V.fullFio
+        """
+
+        return data
+        
+        
     
     def write_exam(self):
 

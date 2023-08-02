@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import EduLevelProgram, Program, DevelopeForm, PriemType, GoogleReport, Status, ExamesTite
 from django.http import JsonResponse
-from .tasks import make_report_xlsx, make_report_google, register_entrant, write_exames
+from .tasks import make_report_xlsx, make_report_google, register_entrant, write_exames, make_mail_exam
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -280,6 +280,55 @@ def download_write_file_view(request):
         task_id = request.POST.get('task_id')
         
         result = write_exames.AsyncResult(task_id)
+      
+        if result.ready():
+
+            result = result.result
+            
+            return JsonResponse({'status': 'SUCCESS', 'file': result["file"], 'file_name': result["file_name"], 'type': result["type"] } )
+           
+        else:
+            
+            return JsonResponse({'status': 'in_progress'})
+    else:
+       
+        return HttpResponse("Error: Invalid request method.")
+
+
+class ExamMail(View):
+    template_name = 'oopk/exam_mail.html'
+
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.data = {
+            "success": True,
+            "errors": None
+        }
+
+        self.postData = {}
+    
+    def get(self, request, *args, **kwargs):
+     
+
+        return render(request, self.template_name)  
+    
+    def post(self, request, *args, **kwargs):
+
+        self.postData = request.POST.dict()
+
+        task = make_mail_exam.delay(self.postData)
+ 
+        return JsonResponse({'task_id': task.id})
+    
+
+@csrf_exempt
+def download_mail_file_view(request):
+
+    if request.method == 'POST' and request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+     
+        task_id = request.POST.get('task_id')
+        
+        result = make_mail_exam.AsyncResult(task_id)
       
         if result.ready():
 

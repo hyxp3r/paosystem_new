@@ -10,7 +10,7 @@ $(document).ready(function() {
 
         // Отправка Ajax-запроса на сервер
         $.ajax({
-            url: '/oopk/oopk/exame/write/filter',  // URL вашего представления
+            url: '/oopk/oopk/exam/write/filter',  // URL вашего представления
             type: 'get',
             data: {
                 'group': group,
@@ -73,7 +73,7 @@ $(document).ready(function() {
 
         // Отправка Ajax-запроса на Django view для получения статуса задачи
         $.ajax({
-            url: '/oopk/oopk/exame/registration/getreg',
+            url: '/oopk/oopk/exam/registration/getreg',
             type: 'POST',
             data: {
                 task_id: task_id,
@@ -107,7 +107,41 @@ $(document).ready(function() {
 
         // Отправка Ajax-запроса на Django view для получения статуса задачи
         $.ajax({
-            url: '/oopk/oopk/exame/write/getwrite',
+            url: '/oopk/oopk/exam/write/getwrite',
+            type: 'POST',
+            data: {
+                task_id: task_id,
+            },
+            
+            success: function(response) {
+                
+                if (response.status == 'SUCCESS') {
+                    // Если задача выполнена успешно, отображение ссылки на скачивание отчета
+                  
+                     makeFile(response.file, response.file_name, response.type)
+                 
+                } else if (response.status == 'FAILURE') {
+                    // Если задача завершена с ошибкой, отображение сообщения об ошибке
+                    alert('Ошибка при создании отчета');
+                } else {
+                    // Если задача все еще выполняется, продолжаем опрашивать статус
+                    setTimeout(function() {
+                        checkTaskStatus(task_id);
+                    }, 500);
+                }
+            },
+            error: function(xhr, status, error) {
+                // Обработка ошибки при опросе статуса задачи
+                alert('Ошибка при проверке статуса задачи');
+            }
+        });
+    }
+
+    function checkTaskStatusMail(task_id) {
+
+        // Отправка Ajax-запроса на Django view для получения статуса задачи
+        $.ajax({
+            url: '/oopk/oopk/exam/mail/getmail',
             type: 'POST',
             data: {
                 task_id: task_id,
@@ -179,6 +213,30 @@ $(document).ready(function() {
           
                 $('.report-making').show();
                 checkTaskStatusWrite(data.task_id);
+            }
+        }
+        )
+
+    });
+
+    // Обработка события отправки формы
+    $('.write_exam').on('submit', function(event) {
+        event.preventDefault();
+        var form = $(this);
+        const url = $(".write_exam").attr("data-url");
+
+        $('.report-ready-xlsx').hide();
+
+        $.ajax({
+            type: 'post',
+            data: $(this).serialize(),
+            url: url,
+            dataType: 'json',
+            
+            success: function (data){
+          
+                $('.report-making').show();
+                checkTaskStatusMail(data.task_id);
             }
         }
         )
