@@ -289,7 +289,7 @@ class ExamWrite(ReportDataOperation):
         where  CONVERT(date,SC.DURATIONBEGIN_P) BETWEEN '{self.request.get("start_date")}' AND '{self.request.get("end_date")}'
         and  V.enrollmentCampaign = '{self.request.get("compony")}'
         {f"AND D.TITLE_P in ({exam})" if self.request.get("exam") else ""}
-        {f"AND {group} is not null" if self.request.get("group") == "Да" else ""}
+        {f"AND {group_where} is not null" if self.request.get("group") == "Да" else ""}
  
         """
         
