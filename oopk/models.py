@@ -102,3 +102,19 @@ class GoogleReport(models.Model):
         verbose_name = "Отчеты Google"
         verbose_name_plural = "Отчеты Google"
     
+
+#Экзамены
+class ExamesTite(models.Model):
+
+    name = models.CharField("Наименование", max_length = 255, null = True, blank = True)
+    edulevel = models.ForeignKey(EduLevelProgram, verbose_name = "Приемная кампания", on_delete= models.CASCADE)
+    group = models.BooleanField(verbose_name = "Содержит группы?", default = False)
+
+    def __str__(self) -> str:
+        return self.name
+    
+
+    class Meta:
+
+        verbose_name = "Экзамены"
+        verbose_name_plural = "Экзамены"
