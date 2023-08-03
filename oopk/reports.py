@@ -60,6 +60,7 @@ class ReportOne(ReportDataOperation):
 
         data = f"""SELECT DISTINCT
         V.personalNumber as 'Личный номер ПК'
+        ,ISNULL(V.snils, '') as 'СНИЛС'
         ,V.fullFio as 'ФИО'
         ,V.developForm as 'Форма'
         ,V.programSetTitle as 'Направление'
