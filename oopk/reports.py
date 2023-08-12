@@ -66,6 +66,7 @@ class ReportOne(ReportDataOperation):
         ,V.programSetTitle as 'Направление'
         ,V.priority as 'Приоритет'
         {",V.competitionType as 'Тип конкурса'" if self.request.get("checkboxCompetition") else ""}
+        {",V.compensationType as 'Тип финансирования'" if self.request.get("checkboxCompensationType") else ""}
         {",V.state as 'Статус абитуриента'" if self.request.get("checkboxStatus") else ""}
         {",Replace(ISNULL(PContact.PHONEMOBILE_P, ''), '+', '') 'Телефон'" if self.request.get("checkboxPhone") else ""}
         {",ISNULL(PContact.EMAIL_P, '') as 'E-mail'" if self.request.get("checkboxEmail") else ""}
