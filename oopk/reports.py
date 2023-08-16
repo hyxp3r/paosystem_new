@@ -320,6 +320,7 @@ class ExamMail(ReportDataOperation):
         EG.TITLE_P '№ ЭГ' -- Номер экзаменационной группы (потока ВИ) для идентификации человека в ведомостях
         ,D.TITLE_P 'Вступительное испытание'
         ,CONVERT(varchar, SC.DURATIONBEGIN_P, 104) 'Начало' -- Дата проведения экзамена
+        ,CONVERT(varchar, SC.DURATIONBEGIN_P, 108) 'Время начала'
         ,V.personalNumber 'Личный номер'
         ,'1' + REVERSE(V.personalNumber * 4) 'password' -- Еще раз генерируется пароль для рассылки 
         ,ISNULL(V.firstName, '') + ' ' + ISNULL(V.middleName, '') 'Обращение' -- Только Имя и Отчество для того, чтобы в письме написать "Добрый день, ..."
