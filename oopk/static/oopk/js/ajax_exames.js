@@ -48,7 +48,6 @@ $(document).ready(function() {
             byteNumbers[i] = decodedData.charCodeAt(i);
         }
         var fileByteArray = new Uint8Array(byteNumbers);
-        console.log("Make file")
         // Создание объекта Blob из байтовых данных
         if (type == "csv") {
             var fileBlob = new Blob([fileByteArray], {type: 'application/CSV'});
