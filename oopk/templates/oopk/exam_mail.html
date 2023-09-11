@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="col-md-4 offset-md-3">
-<form class = "register_exam" data-url="{% url 'exam_mail' %}" id="register_exam" method="post">
+<form class = "mail_exam" data-url="{% url 'exam_mail' %}" id="mail_exam" method="post">
 
     {% csrf_token %}
     <h1>Формирование рассылки</h1>

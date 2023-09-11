@@ -48,7 +48,7 @@ $(document).ready(function() {
             byteNumbers[i] = decodedData.charCodeAt(i);
         }
         var fileByteArray = new Uint8Array(byteNumbers);
-
+        console.log("Make file")
         // Создание объекта Blob из байтовых данных
         if (type == "csv") {
             var fileBlob = new Blob([fileByteArray], {type: 'application/CSV'});
@@ -220,10 +220,10 @@ $(document).ready(function() {
     });
 
     // Обработка события отправки формы
-    $('.write_exam').on('submit', function(event) {
+    $('.mail_exam').on('submit', function(event) {
         event.preventDefault();
         var form = $(this);
-        const url = $(".write_exam").attr("data-url");
+        const url = $(".mail_exam").attr("data-url");
 
         $('.report-ready-xlsx').hide();
 
