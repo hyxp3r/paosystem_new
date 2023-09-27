@@ -1,6 +1,6 @@
 from celery import shared_task
-from .reports import ReportOne
-from .xlsxIO import XLSX_IO
+from .reports import ReportOne, ExamRegistration, ExamWrite, ExamMail
+from .xlsxIO import XLSX_IO, CSV_IO
 from .google import GoogleConnection, Create_Sheet, InsertData, Permissions, Custom
 
 
@@ -55,3 +55,47 @@ def make_report_google(request):
 
     
    
+@shared_task
+def register_entrant(request):
+
+    data = ExamRegistration(request = request).reg_exam()
+    response = {}
+    file = CSV_IO(data = data).makeIO()
+    response["file"] = file
+    response["type"] = "csv"
+    response["file_name"] = "reg.csv"
+
+    return response
+
+@shared_task
+def write_exames(request):
+
+    data = ExamWrite(request = request).write_exam()
+    response = {}
+    if request.get("group") == "Да":
+        file = XLSX_IO(data).makeIO()
+        response["type"] = "xlsx"
+        response["file_name"] = "write.xlsx"
+    else:
+        file = CSV_IO(data = data).makeIO()
+        response["type"] = "csv"
+        response["file_name"] = "write.csv"
+
+    response["file"] = file
+
+    return response
+
+@shared_task
+def make_mail_exam(request):
+
+    data = ExamMail(request = request).write_exam()
+    response = {}
+    
+    file = XLSX_IO(data).makeIO()
+
+    response["type"] = "xlsx"
+    response["file_name"] = "mail.xlsx"
+    response["file"] = file
+
+    return response
+

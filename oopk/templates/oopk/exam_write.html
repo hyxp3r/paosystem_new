@@ -1,0 +1,115 @@
+{% extends "main/index.html" %}
+{% load static %}
+
+{% block link %}
+<link rel="stylesheet" href="{% static 'oopk/css/style.css' %}"> 
+{% endblock %}
+
+{% block content %}
+<div class="col-md-4 offset-md-3">
+<form class = "write_exam" data-url="{% url 'exam_write' %}" id="write_exam" method="post">
+
+    {% csrf_token %}
+    <h1>Запись</h1>
+
+    <div class="form-group">
+        <label for="select2EduLevel">Уровень образования:</label>
+        <select name = "compony" class="form-control" id="select2EduLevel" required>
+            
+            {% for level in eduLevel %}
+            
+            <option value="{{level}}"> {{level}}</option>
+
+            {% endfor %}
+   
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="select2Group">Наличие группы:</label>
+        <select name = "group" class="form-control" id="select2Group" disabled required>
+          
+            <option value="Да"> Да</option>
+            <option value="Нет" selected> Нет</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="select2Exam">Экзамены:</label>
+        <select name = "exam" class="form-control" id="select2Exam" multiple disabled>
+            
+            
+            {% for exam in exames %}
+            
+            <option value="{{exam}}"> {{exam}}</option>
+
+            {% endfor %}
+
+            
+   
+        </select>
+      </div>
+
+    <div class="form-group">
+        <label for="start_date">Выберите начальную дату</label>
+        <input type="date" class="form-control" id="start_date" name = "start_date" placeholder="Введите начальную дату" disabled required>
+      </div>
+
+    <div class="form-group">
+      <label for="end_date">Выберите конечную дату</label>
+      <input type="date" class="form-control" id="end_date" name = "end_date" placeholder="Введите конечную дату" disabled required>
+    </div>
+
+      <div class="report-ready-xlsx text-center alert alert-success" role="alert" style="display: none;">
+        Отчет готов
+      
+      </div>
+
+     
+      <div class="report-making text-center alert alert-warning" role="alert" style="display: none;">
+        Отчет формируется
+      
+      </div>
+      <br>
+      <div class = "text-center">
+          <button type="submit" class="btn btn-primary">Отправить</button>
+          </div>
+
+
+   
+</form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Подключение скрипта Select2 -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    // Инициализация Select2
+    $(document).ready(function() {
+      $('#select2Exam').select2({
+        closeOnSelect: false
+      });
+    
+    });
+  </script>
+
+<script>
+    $(document).ready(function() {
+      var select1 = $('#select2EduLevel'); 
+      
+  
+      select1.prepend('<option value="" disabled selected style="display:none;">Выберите уровень образования</option>');
+    });
+    </script>
+  
+<script src="{% static 'oopk/js/ajax_exames.js' %}"></script>
+
+{% endblock %}
+
+

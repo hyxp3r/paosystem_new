@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import PriemType, Program, DevelopeForm, Status, EduLevelProgram, GoogleReport
+from .models import PriemType, Program, DevelopeForm, Status, EduLevelProgram, GoogleReport, ExamesTite
 
 
 
@@ -33,6 +33,11 @@ class StatusAdmin(admin.ModelAdmin):
 
 @admin.register(GoogleReport)
 class GoogleReportAdmin(admin.ModelAdmin):
+
+    list_display = ("name",)
+
+@admin.register(ExamesTite)
+class ExamesTiteAdmin(admin.ModelAdmin):
 
     list_display = ("name",)
 

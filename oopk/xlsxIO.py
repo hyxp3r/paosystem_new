@@ -34,5 +34,20 @@ class XLSX_IO:
         writer.save()
         
         return base64.b64encode(self.response.getvalue()).decode('utf-8')
+    
+class CSV_IO:
+
+    def __init__(self, data) -> None:
+
+        self.data = data
+        self.response = HttpResponse(content_type="application/CSV")
+        self.response['Content-Disposition'] = f"attachment; filename=reg.csv"
+
+    def makeIO(self):
+
+        self.data.to_csv(self.response, index=False)
+
+        return base64.b64encode(self.response.getvalue()).decode('utf-8')
+        
 
     

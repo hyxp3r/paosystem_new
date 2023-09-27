@@ -18,3 +18,42 @@ $(document).ready(function() {
       }
     });
   });
+
+$(document).ready(function() {
+  $('#checkboxMinRating').change(function() {
+    if ($(this).is(':checked')) {
+
+      $('#minrating').show();
+      $('#minrating').prop('required', true);
+      
+    }
+    else {
+      $('#minrating').hide();
+      $('#minrating').prop('required', false);
+    }
+  });
+});
+
+
+$(document).ready(function() {
+  $('#checkboxOrder').change(function() {
+    if ($(this).is(':checked')) {
+
+      $('#checkboxOrderNumber').show();
+      $('#checkboxOrderDate').show();
+      $('#checkboxOrderNumber_label').show();
+      $('#checkboxOrderDate_label').show();
+    
+      
+    }
+    else {
+      $('#checkboxOrderNumber').hide();
+      $('#checkboxOrderDate').hide();
+      $('#checkboxOrderNumber_label').hide();
+      $('#checkboxOrderDate_label').hide();
+
+      $('#checkboxOrderNumber').prop('checked', false);
+      $('#checkboxOrderDate').prop('checked', false);
+    }
+  });
+});

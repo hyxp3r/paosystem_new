@@ -14,11 +14,11 @@
 
     <div class="form-group">
         <label for="select2EduLevel">Уровень образования:</label>
-        <select name = "EduLevel" class="form-control" id="select2EduLevel" required>
+        <select name = "compony" class="form-control" id="select2EduLevel" required>
             
             {% for level in eduLevel %}
             
-            <option value="{{level.tandem_name}}"> {{level.name}}</option>
+            <option value="{{level.name}}"> {{level.name}}</option>
 
             {% endfor %}
    
@@ -26,7 +26,7 @@
       </div>
       <div class="form-group">
         <label for="select2Program">Направление подготовки:</label>
-        <select name = "program" class="form-control" id="select2Program" multiple disabled required >
+        <select name = "program" class="form-control" id="select2Program" multiple disabled >
             {% for program in programs %}
             <option value="{{program.code}}">{{program.makeProgram}}</option>
             {% endfor %}
@@ -60,6 +60,20 @@
         </select>
       </div>
 
+
+      <div class="form-group">
+        <label for="select2abiturstatus"> Состояние абитуриента:</label>
+        <select name = "abiturstatus" class="form-control" id="select2abiturstatus" multiple >
+
+            {% for stat in status %}
+
+             <option value="{{stat.name}}">{{stat.name}}</option>
+
+             {% endfor %}
+     
+        </select>
+      </div>
+
       <div class="form-group">
         <label for="form-group"><h5>Доп параметры</h5></label>
 
@@ -75,6 +89,34 @@
           <label class="form-check-label" for="checkboxDocumentRating">Средний балл ДОО</label>
         </div>
 
+        <div class = "form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxMinRating" name="checkboxMinRating">
+          <label class="form-check-label" for="checkboxMinRating">Ограничить балл?</label>
+        </div>
+       
+        <input type="number" class="form-control" id="minrating" placeholder="Введите балл" name = "minrating" style="display: none;">
+      
+
+      </div>
+
+      <div class="form-group">
+        <label for="form-group">Cведения о документе об образовании</label>
+
+        <div class = "form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxOriginalHandIn" name="checkboxOriginalHandIn">
+          <label class="form-check-label" for="checkboxOriginalHandIn">Оригинал / копия</label>
+        </div>
+
+        <div class = "form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxDocumentKind" name="checkboxDocumentKind">
+          <label class="form-check-label" for="checkboxDocumentKind">Тип документа</label>
+        </div>
+
+        <div class = "form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxDocumentEduLevel" name="checkboxDocumentEduLevel">
+          <label class="form-check-label" for="checkboxDocumentEduLevel">Уровень образования в документе</label>
+        </div>
+ 
       </div>
 
         <div class = "form-check">
@@ -87,14 +129,14 @@
           <label class="form-check-label" for="checkboxCompetition">Тип конкурса</label>
         </div>
         <div class = "form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxCompensationType" name="checkboxCompensationType">
+          <label class="form-check-label" for="checkboxCompensationType">Тип финансирования</label>
+        </div>
+        <div class = "form-check">
           <input type="checkbox" class="form-check-input" id="checkboxStatus" name="checkboxStatus">
           <label class="form-check-label" for="checkboxStatus">Статус абитуриента</label>
         </div>
 
-        <div class = "form-check">
-          <input type="checkbox" class="form-check-input" id="checkboxOriginalHandIn" name="checkboxOriginalHandIn">
-          <label class="form-check-label" for="checkboxOriginalHandIn">Тип сданного документа</label>
-        </div>
 
         <div class = "form-check">
           <input type="checkbox" class="form-check-input" id="checkboxNeedDormitory" name="checkboxNeedDormitory">
@@ -117,6 +159,31 @@
       </div>
 
       <div class="form-group">
+        <label for="form-group">Ближайший родственник</label>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxRelativeFio" name="checkboxRelativeFio">
+          <label class="form-check-label" for="checkboxRelativeFio">ФИО</label>
+        </div>
+
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxRelativePhone" name="checkboxRelativePhone">
+          <label class="form-check-label" for="checkboxRelativePhone">Телефон</label>
+        </div>
+
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxRelativeEmail" name="checkboxRelativeEmail">
+          <label class="form-check-label" for="checkboxRelativeEmail">E-mail</label>
+        </div>
+
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxRelativeDegree" name="checkboxRelativeDegree">
+          <label class="form-check-label" for="checkboxRelativeDegree">Степень родства</label>
+        </div>
+
+
+      </div>
+
+      <div class="form-group">
         <label for="form-group">Языки</label>
         <div class="form-check">
           <input type="radio" class="form-check-input" id="radioLanguageMain" name="radioLanguage" value = "main">
@@ -129,10 +196,18 @@
  
       </div>
       <div class="form-group">
-        <label for="form-group">Конечный статус</label>
+        <label for="form-group">Информация по зачисленным</label>
         <div class="form-check">
           <input type="checkbox" class="form-check-input" id="checkboxOrder" name="checkboxOrder">
           <label class="form-check-label" for="checkboxOrder">Зачислен</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxOrderNumber" name="checkboxOrderNumber" style="display: none;">
+          <label class="form-check-label" id = "checkboxOrderNumber_label" for="checkboxOrderNumber" style="display: none;">Номер приказа</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="checkboxOrderDate" name="checkboxOrderDate" style="display: none;">
+          <label class="form-check-label" id = "checkboxOrderDate_label" for="checkboxOrderDate" style="display: none;">Дата приказа</label>
         </div>
       </div>
 
@@ -201,6 +276,9 @@
         closeOnSelect: false
       });
       $('#select2Form').select2({
+        closeOnSelect: false
+      });
+      $('#select2abiturstatus').select2({
         closeOnSelect: false
       });
       $('#select2competitionType').select2({
